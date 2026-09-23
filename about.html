@@ -12,6 +12,10 @@
   gtag('config', 'G-V8JH33MYT1');
 </script>
 <title>運営者情報 | モジツール</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <style>
   :root {
     --bg: #f7f7f8;
@@ -116,11 +120,6 @@
 <div class="wrap">
   <header class="site-header">
     <a class="site-brand" href="index.html">モジツール</a>
-    <nav class="site-nav">
-      <a href="about.html">運営者情報</a>
-      <a href="privacy.html">プライバシーポリシー</a>
-      <a href="contact.html">お問い合わせ</a>
-    </nav>
   </header>
 
   <h1>運営者情報</h1>
@@ -151,5 +150,12 @@
     </nav>
   </footer>
 </div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
