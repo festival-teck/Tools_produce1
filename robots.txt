@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://festival-teck.github.io/Tools_produce1/sitemap.xml
