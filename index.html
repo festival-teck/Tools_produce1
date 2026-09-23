@@ -13,6 +13,10 @@
 </script>
 <title>文字数カウント・文字数チェック | モジツール（文字数・テキスト整形・ダミーテキスト生成）</title>
 <meta name="description" content="文字数カウント、機種依存文字チェック、サロゲートペア文字対応のダミーテキスト生成、テキスト差分比較まで、文字・テキストにまつわる作業を無料でブラウザ完結。会員登録不要、入力内容はサーバーに送信されません。">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <style>
   :root {
     --bg: #f7f7f8;
@@ -210,6 +214,44 @@
     margin-top: 48px;
     padding-top: 40px;
     border-top: 1px solid var(--border);
+  }
+  .tab-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-sub);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 10px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab-btn:active {
+    opacity: 0.7;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tool-block {
+    display: none;
+  }
+  .tool-block.active {
+    display: block;
+  }
+  .tool-block + .tool-block.active {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
   }
   .section-title {
     font-size: 1.25rem;
@@ -418,6 +460,102 @@
     background: var(--danger);
     color: #fff;
   }
+  .draft-note {
+    font-size: 0.72rem;
+    color: var(--text-sub);
+    margin: 8px 2px 0;
+  }
+  .preset-check-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .preset-check-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    flex-wrap: wrap;
+  }
+  .preset-check-item .status {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .preset-check-item .status.ok {
+    color: #2ea043;
+  }
+  .preset-check-item .status.over {
+    color: var(--danger);
+  }
+  .limit-gauge .remain.over-count {
+    color: var(--danger);
+  }
+  .split-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .split-controls input[type="number"] {
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    padding: 7px 10px;
+    width: 110px;
+  }
+  .split-output {
+    margin-top: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .split-output.show { display: flex; }
+  .split-chunk {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .split-chunk-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.78rem;
+    color: var(--text-sub);
+    gap: 8px;
+  }
+  .split-chunk-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .split-chunk-copy {
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid transparent;
+    color: var(--accent);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .split-chunk-copy:active {
+    opacity: 0.7;
+  }
 </style>
 </head>
 <body>
@@ -431,7 +569,13 @@
     </nav>
   </header>
 
-  <section class="tool-block">
+  <div class="tab-bar" role="tablist">
+    <button type="button" class="tab-btn active" data-tab="count" role="tab" aria-selected="true">文字数カウント・テキスト整形</button>
+    <button type="button" class="tab-btn" data-tab="dummy" role="tab" aria-selected="false">ダミーテキスト生成</button>
+    <button type="button" class="tab-btn" data-tab="diff" role="tab" aria-selected="false">テキスト差分比較</button>
+  </div>
+
+  <section class="tool-block active" data-tab-panel="count">
   <h1>文字数カウント・テキスト整形</h1>
   <p class="lead">入力はブラウザ内で完結し、どこにも送信されません。</p>
 
@@ -482,13 +626,17 @@
       <div class="stat"><div class="num" id="wordCount">0</div><div class="label">単語数</div></div>
       <div class="stat"><div class="num" id="lineCount">0</div><div class="label">行数</div></div>
       <div class="stat"><div class="num" id="byteCount">0</div><div class="label">バイト数(UTF-8)</div></div>
+      <div class="stat"><div class="num" id="genkoCount">0</div><div class="label">原稿用紙(400字換算)</div></div>
     </div>
   </div>
+  <p class="draft-note">入力内容はブラウザ内に自動保存されます（他の端末やサーバーとは共有されません）</p>
 
   <div class="below-editor">
     <button class="action" id="copyBtn">コピー</button>
     <button class="action" id="clearBtn">クリア</button>
     <button class="action" id="kishuCheckBtn">機種依存文字チェック</button>
+    <button class="action" id="presetCheckBtn">全プリセット一括チェック</button>
+    <button class="action" id="splitToggleBtn">文字数オーバー分を分割</button>
   </div>
 
   <div class="limit-gauge" id="limitGauge">
@@ -506,9 +654,30 @@
     </div>
     <div class="kishu-list" id="kishuList"></div>
   </div>
+
+  <div class="limit-gauge" id="presetCheckPanel">
+    <div class="row">
+      <span>全プリセット一括チェック結果</span>
+      <span class="remain" id="presetCheckSummary">-</span>
+    </div>
+    <div class="preset-check-grid" id="presetCheckList"></div>
+  </div>
+
+  <div class="limit-gauge" id="splitPanel">
+    <div class="row">
+      <span>文字数オーバー時の自動分割</span>
+      <span class="remain" id="splitSummary">-</span>
+    </div>
+    <div class="split-controls">
+      <label class="count-label" for="splitSize">分割サイズ（文字）</label>
+      <input type="number" id="splitSize" value="280" min="1" max="100000" step="1">
+      <button class="action primary" id="splitRunBtn">分割する</button>
+    </div>
+    <div class="split-output" id="splitOutput"></div>
+  </div>
   </section>
 
-  <section class="tool-block">
+  <section class="tool-block" data-tab-panel="dummy">
     <h2 class="section-title">ダミーテキスト生成</h2>
     <p class="lead">文字数と文字種を指定してテキストを生成し、そのままコピーできます。</p>
 
@@ -549,7 +718,7 @@
     </div>
   </section>
 
-  <section class="tool-block">
+  <section class="tool-block" data-tab-panel="diff">
     <h2 class="section-title">テキスト差分比較</h2>
     <p class="lead">2つの文章を比較して、追加・削除された文字をハイライト表示します。</p>
 
@@ -596,6 +765,24 @@
 <div class="toast" id="toast">上限を超えています</div>
 
 <script>
+// タブ切り替え
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('[data-tab-panel]');
+
+tabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    tabButtons.forEach(b => {
+      const isActive = b === btn;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    tabPanels.forEach(panel => {
+      panel.classList.toggle('active', panel.dataset.tabPanel === target);
+    });
+  });
+});
+
 const editor = document.getElementById('editor');
 const presetSelect = document.getElementById('presetSelect');
 const limitGauge = document.getElementById('limitGauge');
@@ -627,14 +814,50 @@ function updateStats() {
   const words = text.trim().length === 0 ? [] : text.trim().split(/\s+/);
   const wordCount = words.length;
   const byteCount = utf8ByteLength(text);
+  // 原稿用紙換算：400字詰め原稿用紙に換算した枚数（1文字でもあれば1枚として切り上げ）
+  const genkoCount = charCount === 0 ? 0 : Math.ceil(charCount / 400);
 
   document.getElementById('charCount').textContent = charCount.toLocaleString();
   document.getElementById('charCountNoSpace').textContent = charCountNoSpace.toLocaleString();
   document.getElementById('wordCount').textContent = wordCount.toLocaleString();
   document.getElementById('lineCount').textContent = lineCount.toLocaleString();
   document.getElementById('byteCount').textContent = byteCount.toLocaleString();
+  document.getElementById('genkoCount').textContent = genkoCount.toLocaleString();
 
   updateGauge(charCount);
+}
+
+// 下書きの自動保存（ブラウザのlocalStorageのみに保存。サーバーには送信されない）
+const DRAFT_KEY = 'mojitool_draft_v1';
+let draftSaveTimer = null;
+
+function saveDraft() {
+  try {
+    if (editor.value === '') {
+      localStorage.removeItem(DRAFT_KEY);
+    } else {
+      localStorage.setItem(DRAFT_KEY, editor.value);
+    }
+  } catch (e) {
+    // プライベートブラウズ等でlocalStorageが使えない場合は何もしない
+  }
+}
+
+function scheduleDraftSave() {
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer = setTimeout(saveDraft, 500);
+}
+
+function restoreDraft() {
+  try {
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (saved) {
+      editor.value = saved;
+      showToast('前回の入力内容を復元しました');
+    }
+  } catch (e) {
+    // 何もしない
+  }
 }
 
 const toast = document.getElementById('toast');
@@ -673,12 +896,16 @@ function updateGauge(charCount) {
   wasOver = isOver;
 }
 
-editor.addEventListener('input', updateStats);
+editor.addEventListener('input', () => {
+  updateStats();
+  scheduleDraftSave();
+});
 presetSelect.addEventListener('change', () => updateStats());
 
 document.getElementById('clearBtn').addEventListener('click', () => {
   editor.value = '';
   updateStats();
+  saveDraft();
   editor.focus();
 });
 
@@ -886,6 +1113,133 @@ kishuCheckBtn.addEventListener('click', () => {
   showToast(`機種依存文字を${totalCount}件検出しました`, 'danger');
 });
 
+// 全プリセット一括チェック：登録済みの用途プリセットすべてに対して、現在の文字数が
+// 上限内かどうかを一覧表示する。複数のSNS等に同じ文章を使い回したい場合に便利。
+const presetCheckBtn = document.getElementById('presetCheckBtn');
+const presetCheckPanel = document.getElementById('presetCheckPanel');
+const presetCheckList = document.getElementById('presetCheckList');
+const presetCheckSummary = document.getElementById('presetCheckSummary');
+
+presetCheckBtn.addEventListener('click', () => {
+  const charCount = [...editor.value].length;
+  presetCheckPanel.classList.add('show');
+  presetCheckList.textContent = '';
+  let overCount = 0;
+
+  Object.values(presets).forEach(({ name, limit }) => {
+    const item = document.createElement('div');
+    item.className = 'preset-check-item';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'name';
+    nameSpan.textContent = limit === null ? `${name}（上限なし）` : `${name}（${limit.toLocaleString()}字）`;
+
+    const statusSpan = document.createElement('span');
+    statusSpan.className = 'status';
+    if (limit === null) {
+      statusSpan.textContent = '対象外';
+      statusSpan.classList.add('ok');
+    } else if (charCount <= limit) {
+      statusSpan.textContent = `OK（残り${(limit - charCount).toLocaleString()}字）`;
+      statusSpan.classList.add('ok');
+    } else {
+      statusSpan.textContent = `超過 ${(charCount - limit).toLocaleString()}字`;
+      statusSpan.classList.add('over');
+      overCount++;
+    }
+
+    item.appendChild(nameSpan);
+    item.appendChild(statusSpan);
+    presetCheckList.appendChild(item);
+  });
+
+  presetCheckSummary.textContent = overCount === 0 ? '全プリセットOK' : `${overCount}件が上限超過`;
+  presetCheckSummary.classList.toggle('over-count', overCount > 0);
+  showToast(
+    overCount === 0 ? '全プリセットの上限に収まっています' : `${overCount}件のプリセットで上限を超えています`,
+    overCount > 0 ? 'danger' : undefined
+  );
+});
+
+// SNS文字数オーバー時の自動分割：指定した文字数ごとにテキストを分割し、
+// スレッド投稿などで使えるよう連番付きで出力する。
+const splitToggleBtn = document.getElementById('splitToggleBtn');
+const splitPanel = document.getElementById('splitPanel');
+const splitSizeInput = document.getElementById('splitSize');
+const splitRunBtn = document.getElementById('splitRunBtn');
+const splitOutput = document.getElementById('splitOutput');
+const splitSummary = document.getElementById('splitSummary');
+
+splitToggleBtn.addEventListener('click', () => {
+  splitPanel.classList.toggle('show');
+  if (splitPanel.classList.contains('show')) {
+    // 用途プリセットが選択されていれば、その上限を分割サイズの初期値として反映する
+    const key = presetSelect.value;
+    if (key !== 'none' && presets[key] && presets[key].limit) {
+      splitSizeInput.value = presets[key].limit;
+    }
+  }
+});
+
+// サロゲートペア文字を分割の途中で断ち切らないよう、コードポイント単位の配列で区切る
+function splitTextByChars(text, size) {
+  const chars = [...text];
+  const chunks = [];
+  for (let i = 0; i < chars.length; i += size) {
+    chunks.push(chars.slice(i, i + size).join(''));
+  }
+  return chunks;
+}
+
+splitRunBtn.addEventListener('click', () => {
+  const text = editor.value;
+  let size = parseInt(splitSizeInput.value, 10);
+  if (!Number.isFinite(size) || size < 1) size = 1;
+  splitSizeInput.value = size;
+
+  if (text === '') {
+    showToast('分割するテキストがありません');
+    return;
+  }
+
+  const chunks = splitTextByChars(text, size);
+  splitOutput.textContent = '';
+  splitOutput.classList.add('show');
+
+  chunks.forEach((chunk, idx) => {
+    const box = document.createElement('div');
+    box.className = 'split-chunk';
+
+    const head = document.createElement('div');
+    head.className = 'split-chunk-head';
+
+    const label = document.createElement('span');
+    label.textContent = `${idx + 1}/${chunks.length}（${[...chunk].length.toLocaleString()}字）`;
+
+    const copyChunkBtn = document.createElement('button');
+    copyChunkBtn.type = 'button';
+    copyChunkBtn.className = 'split-chunk-copy';
+    copyChunkBtn.textContent = 'コピー';
+    copyChunkBtn.addEventListener('click', () => {
+      copyText(`${chunk}\n(${idx + 1}/${chunks.length})`, 'コピーする文章がありません');
+    });
+
+    head.appendChild(label);
+    head.appendChild(copyChunkBtn);
+
+    const body = document.createElement('div');
+    body.className = 'split-chunk-text';
+    body.textContent = chunk;
+
+    box.appendChild(head);
+    box.appendChild(body);
+    splitOutput.appendChild(box);
+  });
+
+  splitSummary.textContent = `${chunks.length}件に分割`;
+  showToast(`${chunks.length}件に分割しました`);
+});
+
 // テキスト差分比較（文字単位のLCSベース差分）
 // linesA/linesBという名前だが、要素は行でも1文字でも同じロジックで扱える汎用実装。
 function diffArrays(arrA, arrB) {
@@ -992,8 +1346,18 @@ diffClearBtn.addEventListener('click', () => {
   diffA.focus();
 });
 
+restoreDraft();
 updateStats();
 updateGenStats();
+
+// PWA対応：Service Workerを登録し、オフラインでも主要ページを開けるようにする
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {
+      // 登録に失敗しても通常利用には影響しないため、静かに無視する
+    });
+  });
+}
 </script>
 </body>
 </html>
