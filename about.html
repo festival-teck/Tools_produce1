@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>運営者情報 | モジツール</title>
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel h2 { font-size: 1rem; font-weight: 700; margin: 28px 0 10px; }
+  .doc-panel h2:first-child { margin-top: 0; }
+  .doc-panel p, .doc-panel li { font-size: 0.9rem; line-height: 1.85; color: var(--text); }
+  .doc-panel ul { margin: 8px 0; padding-left: 1.4em; }
+  .doc-panel a { color: var(--accent); }
+  .profile-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  .profile-row .k {
+    width: 96px;
+    flex-shrink: 0;
+    color: var(--text-sub);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+    <nav class="site-nav">
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <h1>運営者情報</h1>
+  <p class="lead">モジツールについて</p>
+
+  <div class="doc-panel">
+    <h2>運営者</h2>
+    <div class="profile-row"><span class="k">運営者名</span><span>ふぉんD</span></div>
+    <div class="profile-row"><span class="k">連絡先</span><span><a href="contact.html">お問い合わせフォーム</a>よりご連絡ください</span></div>
+
+    <h2>サイトについて</h2>
+    <p>モジツールは、文字数カウントやテキスト整形をはじめ、文字・テキストにまつわる作業をブラウザだけで済ませられる無料のツール集です。会員登録やインストールは不要で、すべての機能はブラウザ内の処理のみで完結し、入力した内容がサーバーに送信されることはありません。</p>
+    <p>QAエンジニアとしての実務経験をもとに、実際の業務やものづくりの現場で「あると便利」なツールを中心に、少しずつ追加していく予定です。</p>
+
+    <h2>掲載情報について</h2>
+    <p>当サイトの各ツールは、できる限り正確に動作するよう努めていますが、内容の正確性・完全性を保証するものではありません。重要な用途でご利用の際は、必ずご自身でのご確認をお願いいたします。</p>
+
+    <h2>広告について</h2>
+    <p>当サイトは、Google AdSenseなど第三者配信の広告サービスを利用する場合があります。詳細は<a href="privacy.html">プライバシーポリシー</a>をご確認ください。</p>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>

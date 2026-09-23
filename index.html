@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>モジツール | 文字数カウント・テキスト整形・ダミーテキスト生成・差分比較</title>
+<meta name="description" content="モジツールは、文字数カウント・テキスト整形・ダミーテキスト生成・テキスト差分比較など、文字やテキストにまつわる作業をブラウザだけで完結できる無料のツール集です。会員登録不要、入力内容はサーバーに送信されません。">
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 780px;
+    padding: 24px 0 40px;
+  }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .site-brand {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .site-nav {
+    display: flex;
+    gap: 14px;
+  }
+  .site-nav a {
+    font-size: 0.78rem;
+    color: var(--text-sub);
+    text-decoration: none;
+  }
+  .site-nav a:hover {
+    color: var(--accent);
+  }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .site-footer a {
+    color: var(--text-sub);
+    text-decoration: none;
+  }
+  .site-footer a:hover {
+    color: var(--accent);
+  }
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .lead {
+    color: var(--text-sub);
+    font-size: 0.85rem;
+    margin: 0 0 20px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  select, button {
+    font-family: inherit;
+    font-size: 0.85rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  select {
+    flex: 1;
+    min-width: 200px;
+  }
+  button.action {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  button.action:active {
+    opacity: 0.7;
+  }
+  .editor-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  textarea {
+    width: 100%;
+    min-height: 320px;
+    border: none;
+    outline: none;
+    resize: vertical;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.7;
+    padding: 18px;
+    display: block;
+  }
+  .statbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: right;
+  }
+  .stat .num {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .label {
+    font-size: 0.68rem;
+    color: var(--text-sub);
+  }
+  .below-editor {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .tool-block + .tool-block {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .limit-gauge {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: none;
+  }
+  .limit-gauge.show { display: block; }
+  .limit-gauge .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    color: var(--text-sub);
+  }
+  .limit-gauge .row .remain {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .limit-gauge .row .remain.over {
+    color: var(--danger);
+  }
+  .bar-track {
+    height: 6px;
+    background: var(--accent-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.15s ease;
+  }
+  .bar-fill.over { background: var(--danger); }
+  .gen-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .gen-row label.count-label {
+    font-size: 0.8rem;
+    color: var(--text-sub);
+    white-space: nowrap;
+  }
+  .gen-row input[type="number"] {
+    font-family: inherit;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    padding: 7px 10px;
+    width: 110px;
+  }
+  .gen-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .chip-btn {
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-sub);
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .chip-btn:active {
+    opacity: 0.7;
+  }
+  .chip-btn.selected {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent);
+  }
+  .gen-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .gen-types label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    background: var(--bg);
+    user-select: none;
+  }
+  .gen-types input[type="checkbox"] {
+    accent-color: var(--accent);
+    margin: 0;
+  }
+  button.action.primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .kishu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .kishu-chip {
+    font-size: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .diff-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .diff-col {
+    flex: 1;
+    min-width: 260px;
+  }
+  .diff-col-label {
+    font-size: 0.8rem;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+  }
+  .diff-col textarea {
+    min-height: 160px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .diff-result {
+    margin-top: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    display: none;
+  }
+  .diff-result.show { display: block; }
+  .diff-char-view {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 0.88rem;
+    line-height: 1.9;
+    padding: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-height: 80px;
+  }
+  .diff-run.same {
+    color: var(--text);
+  }
+  .diff-run.added {
+    background: rgba(46, 160, 67, 0.25);
+    border-radius: 3px;
+  }
+  .diff-run.removed {
+    background: rgba(224, 80, 60, 0.25);
+    text-decoration: line-through;
+    opacity: 0.85;
+    border-radius: 3px;
+  }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.danger {
+    background: var(--danger);
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+    <nav class="site-nav">
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <section class="tool-block">
+  <h1>文字数カウント・テキスト整形</h1>
+  <p class="lead">入力はブラウザ内で完結し、どこにも送信されません。</p>
+
+  <div class="toolbar">
+    <select id="presetSelect">
+      <option value="none">用途</option>
+      <optgroup label="SNS">
+        <option value="x">X（旧Twitter） 280字</option>
+        <option value="threads">Threads 500字</option>
+        <option value="instagram">Instagram キャプション 2200字</option>
+        <option value="line">LINE 1通 500字</option>
+      </optgroup>
+      <optgroup label="記事・ブログ">
+        <option value="note">note 記事（目安）40000字</option>
+        <option value="zenn">Zenn 記事（目安）指定なし</option>
+        <option value="seo">SEO記事 本文 3000字</option>
+      </optgroup>
+      <optgroup label="学術">
+        <option value="thesis-abstract">卒論 要旨 800字</option>
+      </optgroup>
+    </select>
+    <select id="formatSelect">
+      <option value="none">整形メニュー</option>
+      <optgroup label="英数字">
+        <option value="toFullWidth">半角→全角</option>
+        <option value="toHalfWidth">全角→半角</option>
+        <option value="toUpper">大文字に変換</option>
+        <option value="toLower">小文字に変換</option>
+      </optgroup>
+      <optgroup label="かな">
+        <option value="toKatakana">ひらがな→カタカナ</option>
+        <option value="toHiragana">カタカナ→ひらがな</option>
+      </optgroup>
+      <optgroup label="空白・改行">
+        <option value="trimEdges">前後の空白を削除</option>
+        <option value="collapseBlankLines">連続する改行を1つに</option>
+        <option value="removeAllNewlines">改行をすべて削除</option>
+        <option value="removeAllSpaces">スペースをすべて削除</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="editor-panel">
+    <textarea id="editor" placeholder="ここに文章を入力・貼り付けしてください"></textarea>
+    <div class="statbar">
+      <div class="stat"><div class="num" id="charCount">0</div><div class="label">文字数</div></div>
+      <div class="stat"><div class="num" id="charCountNoSpace">0</div><div class="label">文字数(除空白)</div></div>
+      <div class="stat"><div class="num" id="wordCount">0</div><div class="label">単語数</div></div>
+      <div class="stat"><div class="num" id="lineCount">0</div><div class="label">行数</div></div>
+      <div class="stat"><div class="num" id="byteCount">0</div><div class="label">バイト数(UTF-8)</div></div>
+    </div>
+  </div>
+
+  <div class="below-editor">
+    <button class="action" id="copyBtn">コピー</button>
+    <button class="action" id="clearBtn">クリア</button>
+    <button class="action" id="kishuCheckBtn">機種依存文字チェック</button>
+  </div>
+
+  <div class="limit-gauge" id="limitGauge">
+    <div class="row">
+      <span id="limitLabel">上限 -</span>
+      <span class="remain" id="limitRemain">残り -</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="limitBar" style="width:0%"></div></div>
+  </div>
+
+  <div class="limit-gauge" id="kishuPanel">
+    <div class="row">
+      <span>機種依存文字チェック結果</span>
+      <span class="remain" id="kishuCount">-</span>
+    </div>
+    <div class="kishu-list" id="kishuList"></div>
+  </div>
+  </section>
+
+  <section class="tool-block">
+    <h2 class="section-title">ダミーテキスト生成</h2>
+    <p class="lead">文字数と文字種を指定してテキストを生成し、そのままコピーできます。</p>
+
+    <div class="gen-row">
+      <label class="count-label" for="genCount">文字数</label>
+      <input type="number" id="genCount" value="100" min="1" max="100000" step="1">
+    </div>
+    <div class="gen-presets">
+      <button type="button" class="chip-btn" data-count="128">128</button>
+      <button type="button" class="chip-btn" data-count="256">256</button>
+      <button type="button" class="chip-btn" data-count="512">512</button>
+      <button type="button" class="chip-btn" data-count="1000">1000</button>
+      <button type="button" class="chip-btn" data-count="10000">10000</button>
+    </div>
+    <div class="gen-types">
+      <label><input type="checkbox" value="hiragana" checked>ひらがな</label>
+      <label><input type="checkbox" value="katakana" checked>カタカナ</label>
+      <label><input type="checkbox" value="kanji" checked>漢字</label>
+      <label><input type="checkbox" value="alphaUpper">英字(大文字)</label>
+      <label><input type="checkbox" value="alphaLower">英字(小文字)</label>
+      <label><input type="checkbox" value="digit">数字</label>
+      <label><input type="checkbox" value="symbol">記号</label>
+      <label><input type="checkbox" value="surrogate">サロゲートペア文字</label>
+    </div>
+
+    <div class="editor-panel">
+      <textarea id="genOutput" readonly placeholder="「生成する」を押すとここに表示されます"></textarea>
+      <div class="statbar">
+        <div class="stat"><div class="num" id="genCharCount">0</div><div class="label">文字数</div></div>
+        <div class="stat"><div class="num" id="genByteCount">0</div><div class="label">バイト数(UTF-8)</div></div>
+      </div>
+    </div>
+
+    <div class="below-editor">
+      <button class="action primary" id="generateBtn">生成する</button>
+      <button class="action" id="genCopyBtn">コピー</button>
+      <button class="action" id="genClearBtn">クリア</button>
+    </div>
+  </section>
+
+  <section class="tool-block">
+    <h2 class="section-title">テキスト差分比較</h2>
+    <p class="lead">2つの文章を比較して、追加・削除された文字をハイライト表示します。</p>
+
+    <div class="diff-grid">
+      <div class="diff-col">
+        <div class="diff-col-label">テキストA（比較元）</div>
+        <textarea id="diffA" placeholder="比較元のテキストを入力・貼り付け"></textarea>
+      </div>
+      <div class="diff-col">
+        <div class="diff-col-label">テキストB（比較先）</div>
+        <textarea id="diffB" placeholder="比較先のテキストを入力・貼り付け"></textarea>
+      </div>
+    </div>
+
+    <div class="below-editor">
+      <button class="action primary" id="diffRunBtn">比較する</button>
+      <button class="action" id="diffClearBtn">クリア</button>
+    </div>
+
+    <div class="diff-result" id="diffResult">
+      <div class="diff-grid">
+        <div class="diff-col">
+          <div class="diff-col-label">テキストA（削除箇所）</div>
+          <div class="diff-char-view" id="diffViewA"></div>
+        </div>
+        <div class="diff-col">
+          <div class="diff-col-label">テキストB（追加箇所）</div>
+          <div class="diff-char-view" id="diffViewB"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+
+<div class="toast" id="toast">上限を超えています</div>
+
+<script>
+const editor = document.getElementById('editor');
+const presetSelect = document.getElementById('presetSelect');
+const limitGauge = document.getElementById('limitGauge');
+const limitLabel = document.getElementById('limitLabel');
+const limitRemain = document.getElementById('limitRemain');
+const limitBar = document.getElementById('limitBar');
+
+const presets = {
+  x: { name: 'X（旧Twitter）', limit: 280 },
+  threads: { name: 'Threads', limit: 500 },
+  instagram: { name: 'Instagram キャプション', limit: 2200 },
+  line: { name: 'LINE 1通', limit: 500 },
+  note: { name: 'note 記事（目安）', limit: 40000 },
+  zenn: { name: 'Zenn 記事', limit: null },
+  seo: { name: 'SEO記事 本文（目安）', limit: 3000 },
+  'thesis-abstract': { name: '卒論 要旨', limit: 800 },
+};
+
+function utf8ByteLength(str) {
+  return new TextEncoder().encode(str).length;
+}
+
+function updateStats() {
+  const text = editor.value;
+  const charCount = [...text].length;
+  const charCountNoSpace = [...text.replace(/\s/g, '')].length;
+  const lineCount = text === '' ? 0 : text.split('\n').length;
+  // 単語数：英数字の連続をひとかたまりとしてカウント（日本語混在を考慮した簡易版）
+  const words = text.trim().length === 0 ? [] : text.trim().split(/\s+/);
+  const wordCount = words.length;
+  const byteCount = utf8ByteLength(text);
+
+  document.getElementById('charCount').textContent = charCount.toLocaleString();
+  document.getElementById('charCountNoSpace').textContent = charCountNoSpace.toLocaleString();
+  document.getElementById('wordCount').textContent = wordCount.toLocaleString();
+  document.getElementById('lineCount').textContent = lineCount.toLocaleString();
+  document.getElementById('byteCount').textContent = byteCount.toLocaleString();
+
+  updateGauge(charCount);
+}
+
+const toast = document.getElementById('toast');
+let toastTimer = null;
+let wasOver = false;
+
+function showToast(message, variant) {
+  toast.textContent = message;
+  toast.classList.toggle('danger', variant === 'danger');
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function updateGauge(charCount) {
+  const key = presetSelect.value;
+  if (key === 'none' || !presets[key] || presets[key].limit === null) {
+    limitGauge.classList.remove('show');
+    wasOver = false;
+    return;
+  }
+  const { name, limit } = presets[key];
+  limitGauge.classList.add('show');
+  const remain = limit - charCount;
+  const isOver = remain < 0;
+  limitLabel.textContent = `${name}：上限 ${limit.toLocaleString()}字`;
+  limitRemain.textContent = isOver ? `超過 ${Math.abs(remain).toLocaleString()}字` : `残り ${remain.toLocaleString()}字`;
+  limitRemain.classList.toggle('over', isOver);
+  const pct = Math.min(100, (charCount / limit) * 100);
+  limitBar.style.width = pct + '%';
+  limitBar.classList.toggle('over', isOver);
+
+  if (isOver && !wasOver) {
+    showToast(`上限（${limit.toLocaleString()}字）を超えています`, 'danger');
+  }
+  wasOver = isOver;
+}
+
+editor.addEventListener('input', updateStats);
+presetSelect.addEventListener('change', () => updateStats());
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  editor.value = '';
+  updateStats();
+  editor.focus();
+});
+
+// 整形機能
+const formatActions = {
+  toFullWidth: str => str.replace(/[A-Za-z0-9]/g, c => String.fromCharCode(c.charCodeAt(0) + 0xFEE0)),
+  toHalfWidth: str => str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)),
+  toUpper: str => str.toUpperCase(),
+  toLower: str => str.toLowerCase(),
+  toKatakana: str => str.replace(/[\u3041-\u3096]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)),
+  toHiragana: str => str.replace(/[\u30A1-\u30F6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60)),
+  trimEdges: str => str.trim(),
+  collapseBlankLines: str => str.replace(/\n{2,}/g, '\n'),
+  removeAllNewlines: str => str.replace(/\n/g, ''),
+  removeAllSpaces: str => str.replace(/[ \u3000]/g, ''),
+};
+
+const formatSelect = document.getElementById('formatSelect');
+formatSelect.addEventListener('change', () => {
+  const key = formatSelect.value;
+  if (key !== 'none' && formatActions[key]) {
+    editor.value = formatActions[key](editor.value);
+    updateStats();
+  }
+  formatSelect.value = 'none';
+  editor.focus();
+});
+
+// ダミーテキスト生成
+// 漢字は常用漢字から抜粋（機種依存・異体字を避けるための安全な候補）
+const KANJI_POOL = '一二三四五六七八九十百千万円年月日時分秒人子女男大小高低長短新古多少上下左右前後中外東西南北山川田村町市区県国語学校生先私会社員社長部長課長名前住所電話番号今日明日昨日朝昼夜春夏秋冬水火木金土曜日本語英語仕事家族友人先生学生食事料理旅行天気雨雪風空海山道駅車道路店買物読書映画音楽色白黒赤青花木鳥魚犬猫肉魚野菜果物米茶飲食入出発着始終開閉早遅動止立座歩走飛泳笑泣話聞見書読思考知考働休遊習教育医病院薬健康体力心頭手足目耳口鼻';
+const HIRAGANA_POOL = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ';
+const KATAKANA_POOL = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ';
+const ALPHA_UPPER_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const ALPHA_LOWER_POOL = 'abcdefghijklmnopqrstuvwxyz';
+const DIGIT_POOL = '0123456789';
+const SYMBOL_POOL = '、。！？・「」（）ー';
+// サロゲートペア文字：UTF-16で2符号単位（4バイト）になる文字。
+// 絵文字（U+1F300台）と、JIS X 0213で追加された拡張漢字（𠮷野家の「𠮷」等、
+// 実務でよく文字化け・文字数カウント崩れの原因になる字）を混ぜている。
+const SURROGATE_POOL = '😀😁😂😃😄😆😉😊😍😘😜😎🤔😱👍👎🙏💡🔥🚀🎉🎊🎁🍀🌸💧🍎🍕⚽🎵🐶🐱🦄𠮷𠮟𡈽𩸽𠀋𪚲';
+
+const genTypePools = {
+  hiragana: HIRAGANA_POOL,
+  katakana: KATAKANA_POOL,
+  kanji: KANJI_POOL,
+  alphaUpper: ALPHA_UPPER_POOL,
+  alphaLower: ALPHA_LOWER_POOL,
+  digit: DIGIT_POOL,
+  symbol: SYMBOL_POOL,
+  surrogate: SURROGATE_POOL,
+};
+
+const genCountInput = document.getElementById('genCount');
+const genTypeCheckboxes = document.querySelectorAll('.gen-types input[type="checkbox"]');
+const generateBtn = document.getElementById('generateBtn');
+const copyBtn = document.getElementById('copyBtn');
+const chipButtons = document.querySelectorAll('.chip-btn');
+
+function syncChipSelection() {
+  const current = String(parseInt(genCountInput.value, 10));
+  chipButtons.forEach(btn => btn.classList.toggle('selected', btn.dataset.count === current));
+}
+
+chipButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    genCountInput.value = btn.dataset.count;
+    syncChipSelection();
+  });
+});
+
+genCountInput.addEventListener('input', syncChipSelection);
+syncChipSelection();
+
+// pool は文字の配列（コードポイント単位）。サロゲートペア文字はスプレッド構文で
+// 分割すると1文字として保持されるため、charAtではなくこの方式で崩れを防ぐ。
+function generateDummyText(count, poolChars) {
+  let result = '';
+  for (let i = 0; i < count; i++) {
+    result += poolChars[Math.floor(Math.random() * poolChars.length)];
+  }
+  return result;
+}
+
+const genOutput = document.getElementById('genOutput');
+const genCharCountEl = document.getElementById('genCharCount');
+const genByteCountEl = document.getElementById('genByteCount');
+const genCopyBtn = document.getElementById('genCopyBtn');
+
+function updateGenStats() {
+  const text = genOutput.value;
+  genCharCountEl.textContent = [...text].length.toLocaleString();
+  genByteCountEl.textContent = utf8ByteLength(text).toLocaleString();
+}
+
+generateBtn.addEventListener('click', () => {
+  const checkedTypes = Array.from(genTypeCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+  if (checkedTypes.length === 0) {
+    showToast('種類を1つ以上選んでください');
+    return;
+  }
+  let count = parseInt(genCountInput.value, 10);
+  if (!Number.isFinite(count) || count < 1) count = 1;
+  if (count > 100000) count = 100000;
+  genCountInput.value = count;
+
+  const poolStr = checkedTypes.map(t => genTypePools[t]).join('');
+  const poolChars = [...poolStr];
+  genOutput.value = generateDummyText(count, poolChars);
+  updateGenStats();
+  showToast(`${count.toLocaleString()}字のダミーテキストを生成しました`);
+});
+
+// クリップボードへのコピー（共通処理）
+async function copyText(text, emptyMessage) {
+  if (text === '') {
+    showToast(emptyMessage);
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('コピーしました');
+  } catch (err) {
+    // クリップボードAPIが使えない環境向けフォールバック
+    const tmp = document.createElement('textarea');
+    tmp.value = text;
+    tmp.style.position = 'fixed';
+    tmp.style.opacity = '0';
+    document.body.appendChild(tmp);
+    tmp.select();
+    document.execCommand('copy');
+    document.body.removeChild(tmp);
+    showToast('コピーしました');
+  }
+}
+
+copyBtn.addEventListener('click', () => copyText(editor.value, 'コピーする文章がありません'));
+genCopyBtn.addEventListener('click', () => copyText(genOutput.value, 'コピーする文章がありません。先に生成してください'));
+
+const genClearBtn = document.getElementById('genClearBtn');
+genClearBtn.addEventListener('click', () => {
+  genOutput.value = '';
+  updateGenStats();
+});
+
+// 機種依存文字（環境依存文字）チェック
+// 丸数字・ローマ数字・単位記号・括弧付き漢字など、Windows-31J拡張領域に
+// 由来する代表的な範囲を対象にしている。網羅的な公式リストではなく、
+// 実務でよく問題になる代表的な文字種を対象にした簡易チェック。
+const KISHU_IZON_RANGES = [
+  [0x2160, 0x2179], // ローマ数字 Ⅰ-Ⅹ, ⅰ-ⅹ
+  [0x2460, 0x24FF], // 丸数字・囲み英数字
+  [0x2116, 0x2116], // № (番号記号)
+  [0x2121, 0x2121], // ℡ (電話番号記号)
+  [0x3220, 0x3243], // 括弧付き漢数字・元号など
+  [0x3251, 0x32FE], // 丸数字21以降・囲み文字
+  [0x3300, 0x33FF], // 単位・元号の合字（㎜ ㎏ ㍑ ㍻ など）
+];
+
+function isKishuIzonChar(codePoint) {
+  return KISHU_IZON_RANGES.some(([start, end]) => codePoint >= start && codePoint <= end);
+}
+
+function checkKishuIzon(text) {
+  const found = new Map();
+  for (const ch of text) {
+    const cp = ch.codePointAt(0);
+    if (isKishuIzonChar(cp)) {
+      found.set(ch, (found.get(ch) || 0) + 1);
+    }
+  }
+  return found;
+}
+
+const kishuCheckBtn = document.getElementById('kishuCheckBtn');
+const kishuPanel = document.getElementById('kishuPanel');
+const kishuCount = document.getElementById('kishuCount');
+const kishuList = document.getElementById('kishuList');
+
+kishuCheckBtn.addEventListener('click', () => {
+  const found = checkKishuIzon(editor.value);
+  kishuPanel.classList.add('show');
+  kishuList.textContent = '';
+
+  if (found.size === 0) {
+    kishuCount.textContent = '0件';
+    kishuCount.classList.remove('over');
+    const msg = document.createElement('span');
+    msg.className = 'kishu-chip';
+    msg.textContent = '機種依存文字は見つかりませんでした';
+    kishuList.appendChild(msg);
+    showToast('機種依存文字は見つかりませんでした');
+    return;
+  }
+
+  const totalCount = [...found.values()].reduce((a, b) => a + b, 0);
+  kishuCount.textContent = `${found.size}種類 / ${totalCount}件`;
+  kishuCount.classList.add('over');
+  found.forEach((count, ch) => {
+    const chip = document.createElement('span');
+    chip.className = 'kishu-chip';
+    chip.textContent = `${ch} ×${count}`;
+    kishuList.appendChild(chip);
+  });
+  showToast(`機種依存文字を${totalCount}件検出しました`, 'danger');
+});
+
+// テキスト差分比較（文字単位のLCSベース差分）
+// linesA/linesBという名前だが、要素は行でも1文字でも同じロジックで扱える汎用実装。
+function diffArrays(arrA, arrB) {
+  const n = arrA.length;
+  const m = arrB.length;
+  const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      dp[i][j] = arrA[i] === arrB[j]
+        ? dp[i + 1][j + 1] + 1
+        : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const result = [];
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (arrA[i] === arrB[j]) {
+      result.push({ type: 'same', text: arrA[i] });
+      i++; j++;
+    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+      result.push({ type: 'removed', text: arrA[i] });
+      i++;
+    } else {
+      result.push({ type: 'added', text: arrB[j] });
+      j++;
+    }
+  }
+  while (i < n) { result.push({ type: 'removed', text: arrA[i] }); i++; }
+  while (j < m) { result.push({ type: 'added', text: arrB[j] }); j++; }
+  return result;
+}
+
+// 連続する同種の差分（same/added/removed）を1つのまとまりに結合する。
+// 1文字ごとに要素を作ると表示が細切れになるため、見やすさのために結合する。
+function groupDiffRuns(diffResultData) {
+  const runs = [];
+  for (const item of diffResultData) {
+    const last = runs[runs.length - 1];
+    if (last && last.type === item.type) {
+      last.text += item.text;
+    } else {
+      runs.push({ type: item.type, text: item.text });
+    }
+  }
+  return runs;
+}
+
+const diffA = document.getElementById('diffA');
+const diffB = document.getElementById('diffB');
+const diffRunBtn = document.getElementById('diffRunBtn');
+const diffClearBtn = document.getElementById('diffClearBtn');
+const diffResult = document.getElementById('diffResult');
+const diffViewA = document.getElementById('diffViewA');
+const diffViewB = document.getElementById('diffViewB');
+
+// diffResultDataから指定タイプのみ抜き出してrunにまとめ、指定要素へ描画する
+function renderDiffSide(container, diffResultData, keepTypes) {
+  container.textContent = '';
+  const filtered = diffResultData.filter(d => keepTypes.includes(d.type));
+  groupDiffRuns(filtered).forEach(({ type, text }) => {
+    const run = document.createElement('span');
+    run.className = `diff-run ${type}`;
+    run.textContent = text;
+    container.appendChild(run);
+  });
+}
+
+diffRunBtn.addEventListener('click', () => {
+  const textA = diffA.value;
+  const textB = diffB.value;
+  // サロゲートペア文字も1文字として扱うため、スプレッド構文でコードポイント単位に分割
+  const charsA = [...textA];
+  const charsB = [...textB];
+
+  // 文字数が多すぎる組み合わせは計算量が大きくなりすぎるため安全のため中断
+  if (charsA.length * charsB.length > 4000000) {
+    showToast('テキストが長すぎるため比較できません（文字数を減らしてください）', 'danger');
+    return;
+  }
+
+  const diffResultData = diffArrays(charsA, charsB);
+  const addedChars = diffResultData.filter(d => d.type === 'added').length;
+  const removedChars = diffResultData.filter(d => d.type === 'removed').length;
+
+  diffResult.classList.add('show');
+  // 左：テキストAをベースに削除箇所をハイライト（追加分は含めない）
+  renderDiffSide(diffViewA, diffResultData, ['same', 'removed']);
+  // 右：テキストBをベースに追加箇所をハイライト（削除分は含めない）
+  renderDiffSide(diffViewB, diffResultData, ['same', 'added']);
+
+  if (addedChars === 0 && removedChars === 0) {
+    showToast('差分はありませんでした');
+  } else {
+    showToast(`追加${addedChars}字・削除${removedChars}字の差分を検出しました`);
+  }
+});
+
+diffClearBtn.addEventListener('click', () => {
+  diffA.value = '';
+  diffB.value = '';
+  diffViewA.textContent = '';
+  diffViewB.textContent = '';
+  diffResult.classList.remove('show');
+  diffA.focus();
+});
+
+updateStats();
+updateGenStats();
+</script>
+</body>
+</html>

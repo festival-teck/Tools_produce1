@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>お問い合わせ | モジツール</title>
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel p { font-size: 0.9rem; line-height: 1.85; color: var(--text); margin: 0 0 16px; }
+  .form-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 999px;
+  }
+  .form-btn:active { opacity: 0.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+    <nav class="site-nav">
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <h1>お問い合わせ</h1>
+  <p class="lead">モジツールに関するご意見・ご要望・不具合報告はこちらから承っております。</p>
+
+  <div class="doc-panel">
+    <p>下記フォームより、ツールに関するご意見・ご要望・不具合のご報告などをお送りください。内容を確認の上、必要に応じて対応いたします。</p>
+    <p>お問い合わせの内容によっては、返信までにお時間をいただく場合や、返信をいたしかねる場合がございます。あらかじめご了承ください。</p>
+    <a class="form-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSecIyIYPifc3Q76ht-NSiwC00PT657FbqJX7l6AP7DlQkcZMw/viewform" id="contactFormLink" target="_blank" rel="noopener">お問い合わせフォームを開く</a>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>

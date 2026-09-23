@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>プライバシーポリシー | モジツール</title>
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 780px;
+    padding: 24px 0 40px;
+  }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 28px 0 10px;
+  }
+  .doc-panel h2:first-child { margin-top: 0; }
+  .doc-panel p, .doc-panel li {
+    font-size: 0.9rem;
+    line-height: 1.85;
+    color: var(--text);
+  }
+  .doc-panel ul { margin: 8px 0; padding-left: 1.4em; }
+  .doc-panel a { color: var(--accent); }
+  .updated {
+    margin-top: 24px;
+    font-size: 0.78rem;
+    color: var(--text-sub);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+    <nav class="site-nav">
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <h1>プライバシーポリシー</h1>
+  <p class="lead">モジツール（以下「当サイト」）における個人情報の取り扱いについて定めます。</p>
+
+  <div class="doc-panel">
+    <h2>入力内容の取り扱いについて</h2>
+    <p>当サイトが提供する各ツールは、すべての処理をご利用のブラウザ内で完結させる方式で作られています。テキスト入力欄に入力・貼り付けされた内容は、当サイトのサーバーを含むいかなる外部サーバーにも送信されません。入力内容が保存されることもありません。</p>
+
+    <h2>アクセス解析ツールについて</h2>
+    <p>当サイトは、Googleアナリティクスなどのアクセス解析ツールを利用する場合があります。これらのツールはトラフィックデータの収集のためにCookieを使用しますが、このデータは匿名で収集されており、個人を特定するものではありません。この機能はCookieを無効にすることで収集を拒否することが可能です。詳細は、Google社のポリシーページをご確認ください。</p>
+    <p><a href="https://policies.google.com/technologies/partner-sites?hl=ja" target="_blank" rel="noopener">Googleのサービスを使用するサイトやアプリから収集した情報のGoogleによる使用</a></p>
+
+    <h2>広告の配信について</h2>
+    <p>当サイトは、第三者配信の広告サービス（Google AdSenseなど）を利用する場合があります。このような広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。Cookieを無効にする方法や広告設定についての詳細は、以下のリンクをご覧ください。</p>
+    <ul>
+      <li><a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener">広告 – ポリシーと規約 – Google</a></li>
+      <li><a href="https://adssettings.google.com/authenticated" target="_blank" rel="noopener">広告設定</a></li>
+    </ul>
+
+    <h2>免責事項</h2>
+    <p>当サイトのコンテンツ・情報について、可能な限り正確な情報を掲載するよう努めておりますが、誤情報が入り込んだり、情報が古くなったりすることがあります。当サイトに掲載された内容によって生じた損害等の一切の責任を負いかねますので、あらかじめご了承ください。</p>
+    <p>各ツールの計算結果・生成結果の正確性についても保証するものではありません。重要な用途でご利用の際は、必ずご自身での確認をお願いいたします。</p>
+
+    <h2>著作権について</h2>
+    <p>当サイトで掲載している文章や画像等の著作権は、運営者に帰属します。</p>
+
+    <h2>プライバシーポリシーの変更について</h2>
+    <p>当サイトは、個人情報に関して適用される法令を遵守するとともに、本ポリシーの内容を適宜見直し、その改善に努めます。修正された最新のプライバシーポリシーは常に本ページにて開示されます。</p>
+
+    <h2>お問い合わせ</h2>
+    <p>本ポリシーに関するお問い合わせは、<a href="contact.html">お問い合わせページ</a>からお願いいたします。</p>
+
+    <p class="updated">制定日：2026年9月22日</p>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>
