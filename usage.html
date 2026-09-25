@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V8JH33MYT1');
+</script>
+<title>使い方 | モジツール（文字数カウント・ダミーテキスト生成・テキスト差分比較）</title>
+<meta name="description" content="モジツールの使い方ガイド。文字数カウント・用途別上限チェック・SNS投稿用の自動分割・ダミーテキスト生成・テキスト差分比較の使い方をまとめて解説します。">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel + .doc-panel { margin-top: 16px; }
+  .doc-panel h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; color: var(--accent); }
+  .doc-panel h3 { font-size: 0.92rem; font-weight: 700; margin: 20px 0 6px; }
+  .doc-panel h3:first-of-type { margin-top: 4px; }
+  .doc-panel p, .doc-panel li { font-size: 0.9rem; line-height: 1.85; color: var(--text); }
+  .doc-panel ul { margin: 4px 0 0; padding-left: 1.4em; }
+  .doc-panel a { color: var(--accent); }
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+  .toc a {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+  </header>
+
+  <h1>使い方</h1>
+  <p class="lead">モジツールの各機能の使い方をまとめました。会員登録は不要で、すべてブラウザ内で完結します。</p>
+
+  <div class="toc">
+    <a href="#count">文字数カウント・テキスト整形</a>
+    <a href="#dummy">ダミーテキスト生成</a>
+    <a href="#diff">テキスト差分比較</a>
+    <a href="#offline">オフライン対応</a>
+  </div>
+
+  <div class="doc-panel" id="count">
+    <h2>文字数カウント・テキスト整形</h2>
+
+    <h3>基本の使い方</h3>
+    <p>テキストエリアに文章を入力・貼り付けすると、文字数・文字数(空白除く)・単語数・行数・バイト数(UTF-8)・原稿用紙換算枚数(400字詰め)がリアルタイムで表示されます。</p>
+
+    <h3>用途プリセットで上限をチェック</h3>
+    <p>「用途」から X（旧Twitter）やInstagram、noteなど投稿先を選ぶと、上限文字数までの残り・超過が一目で分かるゲージが表示されます。</p>
+
+    <h3>全プリセット一括チェック</h3>
+    <p>「全プリセット一括チェック」ボタンを押すと、登録済みの全用途の上限に対して現在の文字数が収まっているかを一覧表示します。複数のSNSに同じ文章を使い回したいときに便利です。</p>
+
+    <h3>文字数オーバー分を自動分割</h3>
+    <p>上限を超える長文を、指定した文字数ごとに区切ってスレッド投稿用に分割できます。絵文字などのサロゲートペア文字も途中で壊れないよう安全に分割されます。各チャンクは個別にコピーできます。</p>
+
+    <h3>整形メニュー</h3>
+    <p>半角⇔全角変換、大文字/小文字変換、ひらがな⇔カタカナ変換、空白・改行の整理などをワンクリックで行えます。</p>
+
+    <h3>機種依存文字チェック</h3>
+    <p>丸数字やローマ数字、単位記号など、環境によって文字化けしやすい「機種依存文字」を検出します。メールや印刷物で使う文章のチェックにご利用ください。</p>
+
+    <h3>下書きの自動保存</h3>
+    <p>入力内容はブラウザのlocalStorageに自動保存され、ページを閉じても次回開いたときに復元されます。サーバーには送信されず、他の端末とも共有されません。</p>
+  </div>
+
+  <div class="doc-panel" id="dummy">
+    <h2>ダミーテキスト生成</h2>
+    <p>文字数と文字種（ひらがな・カタカナ・漢字・英字・数字・記号・サロゲートペア文字）を指定して、テスト用・デザイン確認用のダミーテキストを生成できます。生成後はそのままコピーして利用できます。</p>
+  </div>
+
+  <div class="doc-panel" id="diff">
+    <h2>テキスト差分比較</h2>
+    <p>2つの文章を貼り付けて「比較する」を押すと、追加された文字（緑）と削除された文字（赤・取り消し線）をハイライト表示します。文章の校正や修正箇所の確認にご利用ください。</p>
+  </div>
+
+  <div class="doc-panel" id="offline">
+    <h2>オフライン対応（PWA）</h2>
+    <p>モジツールはPWA（プログレッシブウェブアプリ）に対応しています。スマートフォンのブラウザメニューから「ホーム画面に追加」すると、アプリのように起動でき、一度読み込んだページはオフラインでも利用できます。</p>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="usage.html">使い方</a>
+      <a href="faq.html">よくある質問</a>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

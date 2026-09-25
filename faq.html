@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V8JH33MYT1');
+</script>
+<title>よくある質問 | モジツール（文字数カウント・ダミーテキスト生成・テキスト差分比較）</title>
+<meta name="description" content="モジツールに関するよくある質問（FAQ）。データの送信有無、料金、オフライン対応、対応ブラウザ、文字数カウントの仕様などについてお答えします。">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .faq-item {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .faq-item + .faq-item { margin-top: 10px; }
+  .faq-item .q {
+    display: flex;
+    gap: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .faq-item .q .mark { color: var(--accent); }
+  .faq-item .a {
+    display: flex;
+    gap: 10px;
+    font-size: 0.88rem;
+    line-height: 1.85;
+    color: var(--text-sub);
+    margin: 0;
+  }
+  .faq-item .a .mark { color: var(--text-sub); flex-shrink: 0; }
+  .faq-item .a a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+  </header>
+
+  <h1>よくある質問</h1>
+  <p class="lead">モジツールについてよくいただくご質問をまとめました。</p>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>入力した文章はサーバーに送信されますか？</p>
+    <p class="a"><span class="mark">A.</span>送信されません。すべての処理はご利用のブラウザ内で完結しており、入力内容が当サイトを含むいかなる外部サーバーにも送られることはありません。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>会員登録や料金は必要ですか？</p>
+    <p class="a"><span class="mark">A.</span>会員登録・インストールは不要で、すべての機能を無料でご利用いただけます。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>オフラインでも使えますか？</p>
+    <p class="a"><span class="mark">A.</span>PWA（プログレッシブウェブアプリ）に対応しているため、スマートフォンで「ホーム画面に追加」しておくと、一度読み込んだ後はオフラインでもご利用いただけます。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>対応しているブラウザは？</p>
+    <p class="a"><span class="mark">A.</span>Chrome・Safari・Edge・Firefoxなど、最新のモダンブラウザに対応しています。古いブラウザでは一部機能が正しく動作しない場合があります。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>絵文字を含む文章でも文字数は正しくカウントされますか？</p>
+    <p class="a"><span class="mark">A.</span>はい。絵文字などの「サロゲートペア文字」も1文字として正しくカウントするよう対応しています。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>原稿用紙換算はどのような基準ですか？</p>
+    <p class="a"><span class="mark">A.</span>400字詰め原稿用紙を基準に換算しています。1文字でも入力されていれば1枚として切り上げて計算します。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>生成したダミーテキストは商用利用できますか？</p>
+    <p class="a"><span class="mark">A.</span>ランダムに生成される文字列のため、ご自由にご利用いただけます。ただし内容に意味はなく、実在する文章と偶然一致する可能性がある点はご了承ください。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>入力した下書きはどこに保存されますか？</p>
+    <p class="a"><span class="mark">A.</span>ご利用のブラウザのlocalStorageにのみ保存されます。他の端末やブラウザとは共有されず、サーバーにも送信されません。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>登録されている用途プリセットにない上限で分割したい場合は？</p>
+    <p class="a"><span class="mark">A.</span>「文字数オーバー分を分割」機能の分割サイズは自由に数値を入力できるので、プリセットにない文字数でも分割可能です。</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="q"><span class="mark">Q.</span>不具合の報告や要望はどこに送ればいいですか？</p>
+    <p class="a"><span class="mark">A.</span><a href="contact.html">お問い合わせページ</a>のフォームよりお送りください。</p>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="usage.html">使い方</a>
+      <a href="faq.html">よくある質問</a>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
