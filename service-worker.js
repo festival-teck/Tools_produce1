@@ -1,6 +1,6 @@
 // モジツール Service Worker
 // オフラインでも主要ページを開けるよう、アプリの構成ファイルをキャッシュする。
-const CACHE_NAME = 'mojitool-cache-v2';
+const CACHE_NAME = 'mojitool-cache-v3';
 const APP_SHELL = [
   './',
   './index.html',
