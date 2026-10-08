@@ -610,18 +610,17 @@
     <select id="presetSelect">
       <option value="none" data-i18n="preset_placeholder">用途</option>
       <optgroup label="SNS" data-i18n-attr-label="preset_group_sns">
-        <option value="x" data-i18n="preset_x">X（旧Twitter） 280字</option>
+        <option value="x" data-i18n="preset_x">X（旧Twitter） 280（日本語は1字=2）</option>
         <option value="threads" data-i18n="preset_threads">Threads 500字</option>
         <option value="instagram" data-i18n="preset_instagram">Instagram キャプション 2200字</option>
-        <option value="line" data-i18n="preset_line">LINE 1通 500字</option>
+        <option value="line" data-i18n="preset_line">LINE公式アカウント 1吹き出し 500字</option>
       </optgroup>
       <optgroup label="記事・ブログ" data-i18n-attr-label="preset_group_blog">
-        <option value="note" data-i18n="preset_note">note 記事（目安）40000字</option>
         <option value="zenn" data-i18n="preset_zenn">Zenn 記事（目安）指定なし</option>
-        <option value="seo" data-i18n="preset_seo">SEO記事 本文 3000字</option>
+        <option value="seo" data-i18n="preset_seo">SEO記事 本文（目安）3000字</option>
       </optgroup>
       <optgroup label="学術" data-i18n-attr-label="preset_group_academic">
-        <option value="thesis-abstract" data-i18n="preset_thesis">卒論 要旨 800字</option>
+        <option value="thesis-abstract" data-i18n="preset_thesis">卒論 要旨（目安）800字</option>
       </optgroup>
     </select>
     <select id="formatSelect">
@@ -783,6 +782,7 @@
     <span data-i18n="footer_copyright">© 2026 モジツール</span>
     <nav>
       <a href="usage.html" data-i18n="nav_usage">使い方</a>
+      <a href="guide.html" data-i18n="nav_guide">読みもの</a>
       <a href="faq.html" data-i18n="nav_faq">よくある質問</a>
       <a href="about.html" data-i18n="footer_about">運営者情報</a>
       <a href="privacy.html" data-i18n="footer_privacy">プライバシーポリシー</a>
@@ -820,14 +820,13 @@ const limitRemain = document.getElementById('limitRemain');
 const limitBar = document.getElementById('limitBar');
 
 const presets = {
-  x: { name: { ja: 'X（旧Twitter）', en: 'X (Twitter)' }, limit: 280 },
+  x: { name: { ja: 'X（旧Twitter）', en: 'X (Twitter)' }, limit: 280, weighted: 'x', splitSize: 140 },
   threads: { name: { ja: 'Threads', en: 'Threads' }, limit: 500 },
   instagram: { name: { ja: 'Instagram キャプション', en: 'Instagram caption' }, limit: 2200 },
-  line: { name: { ja: 'LINE 1通', en: 'LINE message' }, limit: 500 },
-  note: { name: { ja: 'note 記事（目安）', en: 'note article (approx.)' }, limit: 40000 },
+  line: { name: { ja: 'LINE公式アカウント 1吹き出し', en: 'LINE Official Account (per bubble)' }, limit: 500 },
   zenn: { name: { ja: 'Zenn 記事', en: 'Zenn article' }, limit: null },
   seo: { name: { ja: 'SEO記事 本文（目安）', en: 'SEO article body (approx.)' }, limit: 3000 },
-  'thesis-abstract': { name: { ja: '卒論 要旨', en: 'Thesis abstract' }, limit: 800 },
+  'thesis-abstract': { name: { ja: '卒論 要旨（目安）', en: 'Thesis abstract (approx.)' }, limit: 800 },
 };
 
 // ===== 多言語対応（JA / EN 切り替え） =====
@@ -846,14 +845,13 @@ const I18N = {
     preset_group_sns: 'SNS',
     preset_group_blog: '記事・ブログ',
     preset_group_academic: '学術',
-    preset_x: 'X（旧Twitter） 280字',
+    preset_x: 'X（旧Twitter） 280（日本語は1字=2）',
     preset_threads: 'Threads 500字',
     preset_instagram: 'Instagram キャプション 2200字',
-    preset_line: 'LINE 1通 500字',
-    preset_note: 'note 記事（目安）40000字',
+    preset_line: 'LINE公式アカウント 1吹き出し 500字',
     preset_zenn: 'Zenn 記事（目安）指定なし',
-    preset_seo: 'SEO記事 本文 3000字',
-    preset_thesis: '卒論 要旨 800字',
+    preset_seo: 'SEO記事 本文（目安）3000字',
+    preset_thesis: '卒論 要旨（目安）800字',
     format_placeholder: '整形メニュー',
     format_group_alnum: '英数字',
     format_group_kana: 'かな',
@@ -918,6 +916,7 @@ const I18N = {
     footer_privacy: 'プライバシーポリシー',
     footer_contact: 'お問い合わせ',
     nav_usage: '使い方',
+    nav_guide: '読みもの',
     nav_faq: 'よくある質問',
     lang_toggle_label: 'EN',
     toast_restored: '前回の入力内容を復元しました',
@@ -932,6 +931,12 @@ const I18N = {
     kishu_count_none: '0件',
     kishu_count_found: (size, total) => `${size}種類 / ${total.toLocaleString()}件`,
     limit_label: (name, limit) => `${name}：上限 ${limit.toLocaleString()}字`,
+    limit_label_x: (name, limit) => `${name}：上限 ${limit.toLocaleString()}（日本語・絵文字は1字=2、URLは23で計算）`,
+    limit_remain_over_x: n => `超過 ${n.toLocaleString()}`,
+    limit_remain_left_x: n => `残り ${n.toLocaleString()}`,
+    preset_name_with_limit_x: (name, limit) => `${name}（上限 ${limit.toLocaleString()}・日本語は1字=2）`,
+    preset_ok_label_x: n => `OK（残り${n.toLocaleString()}）`,
+    preset_over_x: n => `超過 ${n.toLocaleString()}`,
     limit_remain_over: n => `超過 ${n.toLocaleString()}字`,
     limit_remain_left: n => `残り ${n.toLocaleString()}字`,
     toast_limitOver: limit => `上限（${limit.toLocaleString()}字）を超えています`,
@@ -964,14 +969,13 @@ const I18N = {
     preset_group_sns: 'SNS',
     preset_group_blog: 'Articles & Blogs',
     preset_group_academic: 'Academic',
-    preset_x: 'X (Twitter) — 280 chars',
+    preset_x: 'X (Twitter) — 280 (CJK chars count as 2)',
     preset_threads: 'Threads — 500 chars',
     preset_instagram: 'Instagram caption — 2200 chars',
-    preset_line: 'LINE message — 500 chars',
-    preset_note: 'note article (approx.) — 40000 chars',
+    preset_line: 'LINE Official Account — 500 chars per bubble',
     preset_zenn: 'Zenn article — no limit',
-    preset_seo: 'SEO article body — 3000 chars',
-    preset_thesis: 'Thesis abstract — 800 chars',
+    preset_seo: 'SEO article body (approx.) — 3000 chars',
+    preset_thesis: 'Thesis abstract (approx.) — 800 chars',
     format_placeholder: 'Format menu',
     format_group_alnum: 'Alphanumeric',
     format_group_kana: 'Kana',
@@ -1036,6 +1040,7 @@ const I18N = {
     footer_privacy: 'Privacy Policy',
     footer_contact: 'Contact',
     nav_usage: 'How to use',
+    nav_guide: 'Guides (JA)',
     nav_faq: 'FAQ',
     lang_toggle_label: '日本語',
     toast_restored: 'Restored your previous draft',
@@ -1050,6 +1055,12 @@ const I18N = {
     kishu_count_none: '0',
     kishu_count_found: (size, total) => `${size} type(s) / ${total.toLocaleString()} total`,
     limit_label: (name, limit) => `${name}: limit ${limit.toLocaleString()} chars`,
+    limit_label_x: (name, limit) => `${name}: limit ${limit.toLocaleString()} (CJK chars & emoji = 2, URLs = 23)`,
+    limit_remain_over_x: n => `${n.toLocaleString()} over`,
+    limit_remain_left_x: n => `${n.toLocaleString()} left`,
+    preset_name_with_limit_x: (name, limit) => `${name} (limit ${limit.toLocaleString()}, CJK = 2)`,
+    preset_ok_label_x: n => `OK (${n.toLocaleString()} left)`,
+    preset_over_x: n => `${n.toLocaleString()} over`,
     limit_remain_over: n => `${n.toLocaleString()} chars over`,
     limit_remain_left: n => `${n.toLocaleString()} chars left`,
     toast_limitOver: limit => `You are over the limit (${limit.toLocaleString()} chars)`,
@@ -1208,6 +1219,25 @@ function showToast(message, variant) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
+// X（旧Twitter）の文字数カウント（公式 twitter-text の設定 v3 に準拠した簡易版）
+// 英数字など一部の範囲は1、それ以外（日本語など）は2、絵文字は1つ2、URLは1つ23として数える。
+const X_WEIGHT1_RANGES = [[0, 4351], [8192, 8205], [8208, 8223], [8242, 8247]];
+function xWeightedLength(text) {
+  let total = 0;
+  let s = text.normalize('NFC').replace(/https?:\/\/[^\s]+/gi, () => { total += 23; return ''; });
+  const graphemes = (typeof Intl !== 'undefined' && Intl.Segmenter)
+    ? Array.from(new Intl.Segmenter('ja', { granularity: 'grapheme' }).segment(s), x => x.segment)
+    : [...s];
+  for (const g of graphemes) {
+    if (/\p{Extended_Pictographic}/u.test(g)) { total += 2; continue; }
+    for (const ch of g) {
+      const cp = ch.codePointAt(0);
+      total += X_WEIGHT1_RANGES.some(([a, b]) => cp >= a && cp <= b) ? 1 : 2;
+    }
+  }
+  return total;
+}
+
 function updateGauge(charCount) {
   const key = presetSelect.value;
   if (key === 'none' || !presets[key] || presets[key].limit === null) {
@@ -1215,12 +1245,15 @@ function updateGauge(charCount) {
     wasOver = false;
     return;
   }
-  const { name, limit } = presets[key];
+  const { name, limit, weighted } = presets[key];
   limitGauge.classList.add('show');
+  // X は公式仕様に合わせた重み付きの文字数で判定する
+  if (weighted === 'x') charCount = xWeightedLength(editor.value);
+  const sfx = weighted === 'x' ? '_x' : '';
   const remain = limit - charCount;
   const isOver = remain < 0;
-  limitLabel.textContent = t('limit_label', name[currentLang], limit);
-  limitRemain.textContent = isOver ? t('limit_remain_over', Math.abs(remain)) : t('limit_remain_left', remain);
+  limitLabel.textContent = t('limit_label' + sfx, name[currentLang], limit);
+  limitRemain.textContent = isOver ? t('limit_remain_over' + sfx, Math.abs(remain)) : t('limit_remain_left' + sfx, remain);
   limitRemain.classList.toggle('over', isOver);
   const pct = Math.min(100, (charCount / limit) * 100);
   limitBar.style.width = pct + '%';
@@ -1462,24 +1495,26 @@ presetCheckBtn.addEventListener('click', () => {
   presetCheckList.textContent = '';
   let overCount = 0;
 
-  Object.values(presets).forEach(({ name, limit }) => {
+  Object.values(presets).forEach(({ name, limit, weighted }) => {
+    const count = weighted === 'x' ? xWeightedLength(editor.value) : charCount;
+    const sfx = weighted === 'x' ? '_x' : '';
     const item = document.createElement('div');
     item.className = 'preset-check-item';
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'name';
-    nameSpan.textContent = limit === null ? t('preset_name_no_limit', name[currentLang]) : t('preset_name_with_limit', name[currentLang], limit);
+    nameSpan.textContent = limit === null ? t('preset_name_no_limit', name[currentLang]) : t('preset_name_with_limit' + sfx, name[currentLang], limit);
 
     const statusSpan = document.createElement('span');
     statusSpan.className = 'status';
     if (limit === null) {
       statusSpan.textContent = t('preset_notarget');
       statusSpan.classList.add('ok');
-    } else if (charCount <= limit) {
-      statusSpan.textContent = t('preset_ok_label', limit - charCount);
+    } else if (count <= limit) {
+      statusSpan.textContent = t('preset_ok_label' + sfx, limit - count);
       statusSpan.classList.add('ok');
     } else {
-      statusSpan.textContent = t('preset_over', charCount - limit);
+      statusSpan.textContent = t('preset_over' + sfx, count - limit);
       statusSpan.classList.add('over');
       overCount++;
     }
@@ -1512,7 +1547,7 @@ splitToggleBtn.addEventListener('click', () => {
     // 用途プリセットが選択されていれば、その上限を分割サイズの初期値として反映する
     const key = presetSelect.value;
     if (key !== 'none' && presets[key] && presets[key].limit) {
-      splitSizeInput.value = presets[key].limit;
+      splitSizeInput.value = presets[key].splitSize || presets[key].limit;
     }
   }
 });

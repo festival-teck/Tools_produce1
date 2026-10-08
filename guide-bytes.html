@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://moji.labfond.com/guide-bytes.html">
+<script>
+  if (location.hostname.endsWith("github.io")) {
+    var path = location.pathname.replace(/^\/Tools_produce1/, "");
+    location.replace("https://moji.labfond.com" + path + location.search + location.hash);
+  }
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V8JH33MYT1');
+</script>
+<title>全角・半角・バイト数の違い｜UTF-8とShift_JISで何バイト？ | モジツール</title>
+<meta name="description" content="全角と半角の違い、UTF-8とShift_JISでのバイト数の違い（ひらがな・漢字は何バイトか）、文字数制限とバイト数制限の注意点を、表を使ってわかりやすく解説します。">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel + .doc-panel { margin-top: 16px; }
+  .doc-panel h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; color: var(--accent); }
+  .doc-panel h3 { font-size: 0.92rem; font-weight: 700; margin: 20px 0 6px; }
+  .doc-panel h3:first-of-type { margin-top: 4px; }
+  .doc-panel p, .doc-panel li { font-size: 0.9rem; line-height: 1.85; color: var(--text); }
+  .doc-panel ul { margin: 4px 0 0; padding-left: 1.4em; }
+  .doc-panel a { color: var(--accent); }
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+  .toc a {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    text-decoration: none;
+  }
+
+  .doc-panel code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86em; background: var(--accent-soft); padding: 1px 5px; border-radius: 5px; }
+  .tbl-wrap { overflow-x: auto; margin: 10px 0 16px; }
+  .doc-panel table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+  .doc-panel th, .doc-panel td { border-bottom: 1px solid var(--border); padding: 8px 6px; text-align: left; vertical-align: top; }
+  .doc-panel th { color: var(--text-sub); font-weight: 700; font-size: 0.78rem; white-space: nowrap; }
+  .doc-panel td.num { white-space: nowrap; font-weight: 700; }
+  .note { font-size: 0.8rem !important; color: var(--text-sub) !important; background: var(--bg); border-radius: 10px; padding: 10px 14px; }
+  .cta { display: inline-block; margin: 6px 0 4px; padding: 10px 18px; border-radius: 999px; background: var(--accent); color: #fff !important; text-decoration: none; font-weight: 700; font-size: 0.88rem; }
+  .card-list { list-style: none; padding: 0 !important; }
+  .card-list li { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .card-list a { font-weight: 700; text-decoration: none; }
+  .card-list a:hover { text-decoration: underline; }
+  .card-list p { margin: 4px 0 0; font-size: 0.84rem; color: var(--text-sub); line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+  </header>
+
+  <h1>全角・半角・バイト数の違い</h1>
+  <p class="lead">「全角は2バイト」は本当？　文字数とバイト数の違いを整理します。</p>
+
+  <div class="doc-panel">
+    <p>「全角10文字（半角20文字）以内」「100バイト以内」のように、文字数の制限は<b>文字数</b>で決められている場合と、<b>バイト数</b>で決められている場合があります。この2つの違いを知っておくと、入力フォームやシステムの「なぜか入らない」を防げます。</p>
+
+    <h2>全角と半角</h2>
+    <p><b>半角</b>は英数字のように幅の狭い文字、<b>全角</b>はひらがなや漢字のように正方形に近い幅の文字です。同じ「A」でも、半角の <code>A</code> と全角の <code>Ａ</code> は別の文字として扱われます。</p>
+    <p>カタカナには半角の <code>ｱｲｳ</code> と全角の <code>アイウ</code> があります。半角カタカナは、システムや環境によっては正しく扱えない場合があるため、入力フォームで全角への統一を求められることがよくあります。</p>
+
+    <h2>バイト数とは</h2>
+    <p>バイト数は、文字をコンピューターに保存するときに必要なデータの大きさです。<b>同じ文字でも、文字コード（UTF-8やShift_JISなど）によってバイト数が変わります</b>。現在のウェブで標準的に使われているのはUTF-8です。</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>文字の例</th><th>種類</th><th>UTF-8</th><th>Shift_JIS</th></tr></thead>
+      <tbody>
+        <tr><td><code>A</code> <code>1</code></td><td>半角英数字</td><td class="num">1バイト</td><td class="num">1バイト</td></tr>
+        <tr><td><code>ｱ</code></td><td>半角カタカナ</td><td class="num">3バイト</td><td class="num">1バイト</td></tr>
+        <tr><td><code>あ</code> <code>漢</code></td><td>ひらがな・漢字など</td><td class="num">3バイト</td><td class="num">2バイト</td></tr>
+        <tr><td><code>😀</code> <code>𠮷</code></td><td>絵文字・一部の漢字</td><td class="num">4バイト</td><td class="num">表せない</td></tr>
+      </tbody>
+    </table></div>
+    <p>「全角は2バイト」という説明をよく見かけますが、これは<b>Shift_JISの場合の話</b>です。UTF-8では日本語の多くの文字が3バイトになり、「全角10文字＝20バイト」とはなりません。また、半角カタカナはShift_JISでは1バイトですが、UTF-8では3バイトです。</p>
+
+    <h2>「文字数」と「バイト数」、どちらの制限か確認しよう</h2>
+    <p>システムやデータベースの入力欄では、制限が文字数ではなくバイト数で決められていることがあります。たとえば「100バイトまで」の欄にUTF-8で日本語を入れると、入るのは33文字までです（100÷3＝33余り1）。</p>
+    <ul>
+      <li><b>入力フォームを作る・テストする側</b>：仕様書の「〇〇文字」が文字数なのかバイト数なのか、どの文字コードで数えるのかを確認しておくと、境界値でのトラブルを防げます。</li>
+      <li><b>入力する側</b>：「〇バイト以内」と書かれていたら、日本語は1文字あたり2〜3バイトになると考えて、余裕を持って入力しましょう。</li>
+    </ul>
+
+    <h2>改行もバイト数に含まれる</h2>
+    <p>改行も1文字分のデータです。モジツールでは改行を1文字（UTF-8で1バイト）として数えます。ただし、Windowsのテキストファイルなどでは改行が2文字分（CR＋LF）として保存されることもあり、環境によって数え方が変わる点に注意が必要です。</p>
+
+    <h2>モジツールでの確認方法</h2>
+    <ul>
+      <li>文字数カウントの「バイト数(UTF-8)」で、入力した文章のUTF-8でのバイト数がすぐに分かります。</li>
+      <li>整形メニューの「半角→全角」「全角→半角」で、英数字の全角・半角をまとめて変換できます。</li>
+    </ul>
+    <a class="cta" href="index.html">バイト数を確認する →</a>
+    <h2>あわせて読みたい</h2>
+    <ul><li><a href="guide.html">読みもの 一覧</a></li><li><a href="guide-limits.html">用途別・文字数の上限と目安</a></li><li><a href="guide-test-chars.html">サロゲートペア・機種依存文字とは</a></li></ul>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="usage.html">使い方</a>
+      <a href="guide.html">読みもの</a>
+      <a href="faq.html">よくある質問</a>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://moji.labfond.com/guide-test-chars.html">
+<script>
+  if (location.hostname.endsWith("github.io")) {
+    var path = location.pathname.replace(/^\/Tools_produce1/, "");
+    location.replace("https://moji.labfond.com" + path + location.search + location.hash);
+  }
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V8JH33MYT1');
+</script>
+<title>サロゲートペア・機種依存文字とは｜テストで試したい文字 | モジツール</title>
+<meta name="description" content="サロゲートペア文字（𠮷・絵文字）と機種依存文字（①・㈱など）の意味と注意点、入力フォームのテストで試しておきたい文字の例をわかりやすく解説します。">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#3b6ef6">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+  :root {
+    --bg: #f7f7f8;
+    --panel: #ffffff;
+    --border: #e2e2e6;
+    --text: #1a1a1e;
+    --text-sub: #6b6b74;
+    --accent: #3b6ef6;
+    --accent-soft: #eef2ff;
+    --danger: #e0503c;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17171a;
+      --panel: #201f23;
+      --border: #34333a;
+      --text: #f0f0f2;
+      --text-sub: #9b9aa3;
+      --accent: #6f93ff;
+      --accent-soft: #262a3f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17171a;
+    --panel: #201f23;
+    --border: #34333a;
+    --text: #f0f0f2;
+    --text-sub: #9b9aa3;
+    --accent: #6f93ff;
+    --accent-soft: #262a3f;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .wrap { width: 100%; max-width: 780px; padding: 24px 0 40px; }
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
+  .site-nav a:hover { color: var(--accent); }
+  .site-footer {
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+  }
+  .site-footer nav { display: flex; gap: 14px; flex-wrap: wrap; }
+  .site-footer a { color: var(--text-sub); text-decoration: none; }
+  .site-footer a:hover { color: var(--accent); }
+  h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
+  .lead { color: var(--text-sub); font-size: 0.85rem; margin: 0 0 24px; }
+  .doc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .doc-panel + .doc-panel { margin-top: 16px; }
+  .doc-panel h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; color: var(--accent); }
+  .doc-panel h3 { font-size: 0.92rem; font-weight: 700; margin: 20px 0 6px; }
+  .doc-panel h3:first-of-type { margin-top: 4px; }
+  .doc-panel p, .doc-panel li { font-size: 0.9rem; line-height: 1.85; color: var(--text); }
+  .doc-panel ul { margin: 4px 0 0; padding-left: 1.4em; }
+  .doc-panel a { color: var(--accent); }
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+  .toc a {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 6px 14px;
+    text-decoration: none;
+  }
+
+  .doc-panel code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86em; background: var(--accent-soft); padding: 1px 5px; border-radius: 5px; }
+  .tbl-wrap { overflow-x: auto; margin: 10px 0 16px; }
+  .doc-panel table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+  .doc-panel th, .doc-panel td { border-bottom: 1px solid var(--border); padding: 8px 6px; text-align: left; vertical-align: top; }
+  .doc-panel th { color: var(--text-sub); font-weight: 700; font-size: 0.78rem; white-space: nowrap; }
+  .doc-panel td.num { white-space: nowrap; font-weight: 700; }
+  .note { font-size: 0.8rem !important; color: var(--text-sub) !important; background: var(--bg); border-radius: 10px; padding: 10px 14px; }
+  .cta { display: inline-block; margin: 6px 0 4px; padding: 10px 18px; border-radius: 999px; background: var(--accent); color: #fff !important; text-decoration: none; font-weight: 700; font-size: 0.88rem; }
+  .card-list { list-style: none; padding: 0 !important; }
+  .card-list li { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .card-list a { font-weight: 700; text-decoration: none; }
+  .card-list a:hover { text-decoration: underline; }
+  .card-list p { margin: 4px 0 0; font-size: 0.84rem; color: var(--text-sub); line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site-header">
+    <a class="site-brand" href="index.html">モジツール</a>
+  </header>
+
+  <h1>サロゲートペア・機種依存文字とは</h1>
+  <p class="lead">文字数のずれや文字化けの原因になりやすい文字を、テストの観点から解説します。</p>
+
+  <div class="doc-panel">
+    <p>入力フォームやシステムの動作確認では、ふつうの日本語だけでなく<b>扱いに注意が必要な文字</b>を試しておくと、不具合を早めに見つけられます。ここでは、代表的な「サロゲートペア文字」と「機種依存文字」を中心に紹介します。</p>
+
+    <h2>サロゲートペア文字とは</h2>
+    <p>コンピューターでは、文字ごとに「U+3042（あ）」のような番号（コードポイント）が割り当てられています。このうち <code>U+10000</code> 以上の番号を持つ文字は、UTF-16という方式では<b>2つの単位を組み合わせて1文字</b>を表します。この組み合わせを<b>サロゲートペア</b>と呼びます。</p>
+    <p>代表的なのは、絵文字の <code>😀</code> や、「吉」の異体字である <code>𠮷</code>（つちよし）などです。</p>
+    <p>JavaScriptなど、UTF-16を内部で使うプログラミング言語では、文字数を単純に数えると<b>サロゲートペア文字が2文字として数えられてしまう</b>ことがあります。その結果、次のような不具合が起きることがあります。</p>
+    <ul>
+      <li>「10文字まで」の入力欄に、絵文字を含めて10文字入れたのに超過と判定される</li>
+      <li>文字列を途中で切ったときに、文字が半分に分かれて文字化けする</li>
+      <li>UTF-8で4バイトになるため、データベースの設定によっては保存できない</li>
+    </ul>
+
+    <h2>見た目は1文字でも、複数の文字でできていることがある</h2>
+    <p>絵文字の中には、複数の文字を組み合わせて1つに見せているものがあります。たとえば家族の絵文字 <code>👨‍👩‍👧</code> は、3つの人物の絵文字を「ゼロ幅接合子（ZWJ）」という見えない文字で2か所つないだもので、<b>合計5文字</b>でできています。</p>
+    <p>同じように、「が」には1文字の <code>が</code> と、「か」＋「濁点」の2文字で表した形の2通りがあり、見た目は同じでも文字数が変わります。Macで作ったファイル名をWindowsに移したときなどに、この違いが原因で検索や比較がうまくいかないことがあります。</p>
+    <p class="note">※モジツールの文字数カウントは、コードポイント（文字番号）単位で数えています。サロゲートペア文字は1文字として数えますが、組み合わせでできた絵文字は、組み合わせた文字の数でカウントされます。</p>
+
+    <h2>機種依存文字とは</h2>
+    <p><b>機種依存文字</b>（環境依存文字）は、特定のパソコンや環境でしか正しく表示できない、または別の文字に化けるおそれがある文字のことです。代表的なものに次のような文字があります。</p>
+    <ul>
+      <li>丸数字：<code>①</code> <code>②</code> <code>③</code></li>
+      <li>ローマ数字：<code>Ⅰ</code> <code>Ⅱ</code> <code>Ⅲ</code></li>
+      <li>単位・省略記号：<code>㎜</code> <code>㎏</code> <code>㈱</code> <code>№</code> <code>℡</code></li>
+      <li>元号の合字：<code>㍻</code> <code>㍼</code></li>
+    </ul>
+    <p>これらの多くは、昔の日本語の文字コード規格（JIS X 0208）には含まれておらず、パソコンメーカーなどが独自に追加した文字でした。現在はUnicodeが普及したため多くの環境で表示できますが、古いシステムとのデータのやり取りや、メールの文字コードによっては、今でも文字化けの原因になることがあります。</p>
+
+    <h2>テストで試しておきたい文字の例</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>文字</th><th>確認したいこと</th></tr></thead>
+      <tbody>
+        <tr><td><code>𠮷</code> <code>😀</code></td><td>サロゲートペア文字が1文字として数えられるか、保存・表示できるか</td></tr>
+        <tr><td><code>👨‍👩‍👧</code></td><td>組み合わせ絵文字の文字数の扱い、途中で切れたときの表示</td></tr>
+        <tr><td><code>①</code> <code>㈱</code> <code>Ⅲ</code></td><td>機種依存文字が文字化けしないか</td></tr>
+        <tr><td><code>ｱｲｳ</code></td><td>半角カタカナの扱い（全角への変換や入力制限）</td></tr>
+        <tr><td><code>ソ</code> <code>表</code> <code>能</code></td><td>Shift_JISを使うシステムでの文字化け（2バイト目が「\」と同じ値になる、いわゆる「5C問題」）</td></tr>
+        <tr><td>全角スペース・改行</td><td>空白や改行が文字数に含まれるか、前後の空白が削除されるか</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>モジツールでの確認方法</h2>
+    <ul>
+      <li>「ダミーテキスト生成」で「サロゲートペア文字」にチェックを入れると、絵文字や <code>𠮷</code> などを含むテスト用の文章を、指定した文字数で作れます。</li>
+      <li>文字数カウントの「機種依存文字チェック」で、文章に含まれる丸数字や単位記号などを一覧で確認できます。</li>
+      <li>「バイト数(UTF-8)」を見ると、4バイト文字が含まれているかの目安になります。</li>
+    </ul>
+    <a class="cta" href="index.html">テスト用の文章を作る →</a>
+    <h2>あわせて読みたい</h2>
+    <ul><li><a href="guide.html">読みもの 一覧</a></li><li><a href="guide-limits.html">用途別・文字数の上限と目安</a></li><li><a href="guide-bytes.html">全角・半角・バイト数の違い</a></li></ul>
+  </div>
+
+  <footer class="site-footer">
+    <span>© 2026 モジツール</span>
+    <nav>
+      <a href="usage.html">使い方</a>
+      <a href="guide.html">読みもの</a>
+      <a href="faq.html">よくある質問</a>
+      <a href="about.html">運営者情報</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="contact.html">お問い合わせ</a>
+    </nav>
+  </footer>
+</div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
