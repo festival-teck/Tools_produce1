@@ -2,13 +2,6 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<link rel="canonical" href="https://moji.labfond.com/">
-<script>
-  if (location.hostname.endsWith("github.io")) {
-    var path = location.pathname.replace(/^\/Tools_produce1/, "");
-    location.replace("https://moji.labfond.com" + path + location.search + location.hash);
-  }
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
@@ -17,15 +10,13 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-V8JH33MYT1');
-  gtag('config', 'G-GK0SS0BLJ9');
 </script>
 <title>文字数カウント・文字数チェック | モジツール（文字数・テキスト整形・ダミーテキスト生成）</title>
 <meta name="description" content="文字数カウント、機種依存文字チェック、サロゲートペア文字対応のダミーテキスト生成、テキスト差分比較まで、文字・テキストにまつわる作業を無料でブラウザ完結。会員登録不要、入力内容はサーバーに送信されません。">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#3b6ef6">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <style>
   :root {
     --bg: #f7f7f8;
@@ -90,7 +81,7 @@
     margin-bottom: 18px;
   }
   .site-brand {
-    font-size: 0.95rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--text);
     text-decoration: none;
@@ -589,6 +580,19 @@
   .split-chunk-copy:active {
     opacity: 0.7;
   }
+  .td-panel {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .td-panel select {
+    flex: 0 1 auto;
+    min-width: 180px;
+  }
+  .td-panel .split-chunk-text {
+    max-height: 150px;
+    overflow-y: auto;
+  }
 </style>
 </head>
 <body>
@@ -612,17 +616,18 @@
     <select id="presetSelect">
       <option value="none" data-i18n="preset_placeholder">用途</option>
       <optgroup label="SNS" data-i18n-attr-label="preset_group_sns">
-        <option value="x" data-i18n="preset_x">X（旧Twitter） 280（日本語は1字=2）</option>
+        <option value="x" data-i18n="preset_x">X（旧Twitter） 280字</option>
         <option value="threads" data-i18n="preset_threads">Threads 500字</option>
         <option value="instagram" data-i18n="preset_instagram">Instagram キャプション 2200字</option>
-        <option value="line" data-i18n="preset_line">LINE公式アカウント 1吹き出し 500字</option>
+        <option value="line" data-i18n="preset_line">LINE 1通 500字</option>
       </optgroup>
       <optgroup label="記事・ブログ" data-i18n-attr-label="preset_group_blog">
+        <option value="note" data-i18n="preset_note">note 記事（目安）40000字</option>
         <option value="zenn" data-i18n="preset_zenn">Zenn 記事（目安）指定なし</option>
-        <option value="seo" data-i18n="preset_seo">SEO記事 本文（目安）3000字</option>
+        <option value="seo" data-i18n="preset_seo">SEO記事 本文 3000字</option>
       </optgroup>
       <optgroup label="学術" data-i18n-attr-label="preset_group_academic">
-        <option value="thesis-abstract" data-i18n="preset_thesis">卒論 要旨（目安）800字</option>
+        <option value="thesis-abstract" data-i18n="preset_thesis">卒論 要旨 800字</option>
       </optgroup>
     </select>
     <select id="formatSelect">
@@ -744,6 +749,34 @@
       <button class="action" id="genCopyBtn" data-i18n="btn_genCopy">コピー</button>
       <button class="action" id="genClearBtn" data-i18n="btn_genClear">クリア</button>
     </div>
+
+    <div class="td-panel">
+      <h2 class="section-title" data-i18n="td_title">テストデータ生成（境界値・混在）</h2>
+      <p class="lead" data-i18n="td_lead">「ちょうどN文字」の文字列を、境界値（N-1 / N / N+1）つきでまとめて作れます。入力欄の文字数制限テストなどにどうぞ。</p>
+
+      <div class="gen-row">
+        <label class="count-label" for="tdN" data-i18n="td_n_label">基準の文字数 N</label>
+        <input type="number" id="tdN" value="100" min="0" max="99999" step="1">
+        <select id="tdPattern">
+          <option value="fullwidth" data-i18n="td_pattern_fullwidth">全角のみ（かな・漢字）</option>
+          <option value="halfwidth" data-i18n="td_pattern_halfwidth">半角英数字のみ</option>
+          <option value="mixed" selected data-i18n="td_pattern_mixed">全角半角混在（半角カナ含む）</option>
+          <option value="surrogate" data-i18n="td_pattern_surrogate">サロゲートペア入り（𠮷・絵文字）</option>
+          <option value="spaces" data-i18n="td_pattern_spaces">空白・改行・タブ入り</option>
+        </select>
+      </div>
+      <div class="gen-types" id="tdLengths">
+        <label><input type="checkbox" value="0"><span data-i18n="td_len_0">0文字</span></label>
+        <label><input type="checkbox" value="1" checked><span data-i18n="td_len_1">1文字</span></label>
+        <label><input type="checkbox" value="n-1" checked><span>N-1</span></label>
+        <label><input type="checkbox" value="n" checked><span>N</span></label>
+        <label><input type="checkbox" value="n+1" checked><span>N+1</span></label>
+      </div>
+      <div class="below-editor" style="justify-content:flex-start;margin-top:0">
+        <button class="action primary" id="tdGenerateBtn" data-i18n="btn_generate">生成する</button>
+      </div>
+      <div class="split-output" id="tdOutput"></div>
+    </div>
   </section>
 
   <section class="tool-block" data-tab-panel="diff">
@@ -784,7 +817,6 @@
     <span data-i18n="footer_copyright">© 2026 モジツール</span>
     <nav>
       <a href="usage.html" data-i18n="nav_usage">使い方</a>
-      <a href="guide.html" data-i18n="nav_guide">読みもの</a>
       <a href="faq.html" data-i18n="nav_faq">よくある質問</a>
       <a href="about.html" data-i18n="footer_about">運営者情報</a>
       <a href="privacy.html" data-i18n="footer_privacy">プライバシーポリシー</a>
@@ -822,13 +854,14 @@ const limitRemain = document.getElementById('limitRemain');
 const limitBar = document.getElementById('limitBar');
 
 const presets = {
-  x: { name: { ja: 'X（旧Twitter）', en: 'X (Twitter)' }, limit: 280, weighted: 'x', splitSize: 140 },
+  x: { name: { ja: 'X（旧Twitter）', en: 'X (Twitter)' }, limit: 280 },
   threads: { name: { ja: 'Threads', en: 'Threads' }, limit: 500 },
   instagram: { name: { ja: 'Instagram キャプション', en: 'Instagram caption' }, limit: 2200 },
-  line: { name: { ja: 'LINE公式アカウント 1吹き出し', en: 'LINE Official Account (per bubble)' }, limit: 500 },
+  line: { name: { ja: 'LINE 1通', en: 'LINE message' }, limit: 500 },
+  note: { name: { ja: 'note 記事（目安）', en: 'note article (approx.)' }, limit: 40000 },
   zenn: { name: { ja: 'Zenn 記事', en: 'Zenn article' }, limit: null },
   seo: { name: { ja: 'SEO記事 本文（目安）', en: 'SEO article body (approx.)' }, limit: 3000 },
-  'thesis-abstract': { name: { ja: '卒論 要旨（目安）', en: 'Thesis abstract (approx.)' }, limit: 800 },
+  'thesis-abstract': { name: { ja: '卒論 要旨', en: 'Thesis abstract' }, limit: 800 },
 };
 
 // ===== 多言語対応（JA / EN 切り替え） =====
@@ -847,13 +880,14 @@ const I18N = {
     preset_group_sns: 'SNS',
     preset_group_blog: '記事・ブログ',
     preset_group_academic: '学術',
-    preset_x: 'X（旧Twitter） 280（日本語は1字=2）',
+    preset_x: 'X（旧Twitter） 280字',
     preset_threads: 'Threads 500字',
     preset_instagram: 'Instagram キャプション 2200字',
-    preset_line: 'LINE公式アカウント 1吹き出し 500字',
+    preset_line: 'LINE 1通 500字',
+    preset_note: 'note 記事（目安）40000字',
     preset_zenn: 'Zenn 記事（目安）指定なし',
-    preset_seo: 'SEO記事 本文（目安）3000字',
-    preset_thesis: '卒論 要旨（目安）800字',
+    preset_seo: 'SEO記事 本文 3000字',
+    preset_thesis: '卒論 要旨 800字',
     format_placeholder: '整形メニュー',
     format_group_alnum: '英数字',
     format_group_kana: 'かな',
@@ -903,6 +937,20 @@ const I18N = {
     btn_generate: '生成する',
     btn_genCopy: 'コピー',
     btn_genClear: 'クリア',
+    td_title: 'テストデータ生成（境界値・混在）',
+    td_lead: '「ちょうどN文字」の文字列を、境界値（N-1 / N / N+1）つきでまとめて作れます。入力欄の文字数制限テストなどにどうぞ。',
+    td_n_label: '基準の文字数 N',
+    td_pattern_fullwidth: '全角のみ（かな・漢字）',
+    td_pattern_halfwidth: '半角英数字のみ',
+    td_pattern_mixed: '全角半角混在（半角カナ含む）',
+    td_pattern_surrogate: 'サロゲートペア入り（𠮷・絵文字）',
+    td_pattern_spaces: '空白・改行・タブ入り',
+    td_len_0: '0文字',
+    td_len_1: '1文字',
+    td_item_label: (labels, len, u16, bytes) => `${labels}：${len.toLocaleString()}文字（UTF-16: ${u16.toLocaleString()} / UTF-8: ${bytes.toLocaleString()}バイト）`,
+    td_summary: n => `${n}件`,
+    toast_tdNone: '長さを1つ以上選んでください',
+    toast_tdDone: n => `${n}件のテストデータを生成しました`,
     diff_h2: 'テキスト差分比較',
     diff_lead: '2つの文章を比較して、追加・削除された文字をハイライト表示します。',
     diff_colA_label: 'テキストA（比較元）',
@@ -918,7 +966,6 @@ const I18N = {
     footer_privacy: 'プライバシーポリシー',
     footer_contact: 'お問い合わせ',
     nav_usage: '使い方',
-    nav_guide: '読みもの',
     nav_faq: 'よくある質問',
     lang_toggle_label: 'EN',
     toast_restored: '前回の入力内容を復元しました',
@@ -933,12 +980,6 @@ const I18N = {
     kishu_count_none: '0件',
     kishu_count_found: (size, total) => `${size}種類 / ${total.toLocaleString()}件`,
     limit_label: (name, limit) => `${name}：上限 ${limit.toLocaleString()}字`,
-    limit_label_x: (name, limit) => `${name}：上限 ${limit.toLocaleString()}（日本語・絵文字は1字=2、URLは23で計算）`,
-    limit_remain_over_x: n => `超過 ${n.toLocaleString()}`,
-    limit_remain_left_x: n => `残り ${n.toLocaleString()}`,
-    preset_name_with_limit_x: (name, limit) => `${name}（上限 ${limit.toLocaleString()}・日本語は1字=2）`,
-    preset_ok_label_x: n => `OK（残り${n.toLocaleString()}）`,
-    preset_over_x: n => `超過 ${n.toLocaleString()}`,
     limit_remain_over: n => `超過 ${n.toLocaleString()}字`,
     limit_remain_left: n => `残り ${n.toLocaleString()}字`,
     toast_limitOver: limit => `上限（${limit.toLocaleString()}字）を超えています`,
@@ -971,13 +1012,14 @@ const I18N = {
     preset_group_sns: 'SNS',
     preset_group_blog: 'Articles & Blogs',
     preset_group_academic: 'Academic',
-    preset_x: 'X (Twitter) — 280 (CJK chars count as 2)',
+    preset_x: 'X (Twitter) — 280 chars',
     preset_threads: 'Threads — 500 chars',
     preset_instagram: 'Instagram caption — 2200 chars',
-    preset_line: 'LINE Official Account — 500 chars per bubble',
+    preset_line: 'LINE message — 500 chars',
+    preset_note: 'note article (approx.) — 40000 chars',
     preset_zenn: 'Zenn article — no limit',
-    preset_seo: 'SEO article body (approx.) — 3000 chars',
-    preset_thesis: 'Thesis abstract (approx.) — 800 chars',
+    preset_seo: 'SEO article body — 3000 chars',
+    preset_thesis: 'Thesis abstract — 800 chars',
     format_placeholder: 'Format menu',
     format_group_alnum: 'Alphanumeric',
     format_group_kana: 'Kana',
@@ -1027,6 +1069,20 @@ const I18N = {
     btn_generate: 'Generate',
     btn_genCopy: 'Copy',
     btn_genClear: 'Clear',
+    td_title: 'Test Data Generator (boundary values & mixed)',
+    td_lead: 'Generate strings of exactly N characters with boundary values (N-1 / N / N+1) in one go — handy for testing input length limits.',
+    td_n_label: 'Base length N',
+    td_pattern_fullwidth: 'Full-width only (kana & kanji)',
+    td_pattern_halfwidth: 'Half-width alphanumeric only',
+    td_pattern_mixed: 'Full/half-width mixed (incl. half-width kana)',
+    td_pattern_surrogate: 'With surrogate pairs (𠮷 & emoji)',
+    td_pattern_spaces: 'With spaces, line breaks & tabs',
+    td_len_0: '0 chars',
+    td_len_1: '1 char',
+    td_item_label: (labels, len, u16, bytes) => `${labels}: ${len.toLocaleString()} char(s) (UTF-16: ${u16.toLocaleString()} / UTF-8: ${bytes.toLocaleString()} bytes)`,
+    td_summary: n => `${n} item(s)`,
+    toast_tdNone: 'Please select at least one length',
+    toast_tdDone: n => `Generated ${n} test string(s)`,
     diff_h2: 'Text Diff Compare',
     diff_lead: 'Compare two texts and highlight added/removed characters.',
     diff_colA_label: 'Text A (original)',
@@ -1042,7 +1098,6 @@ const I18N = {
     footer_privacy: 'Privacy Policy',
     footer_contact: 'Contact',
     nav_usage: 'How to use',
-    nav_guide: 'Guides (JA)',
     nav_faq: 'FAQ',
     lang_toggle_label: '日本語',
     toast_restored: 'Restored your previous draft',
@@ -1057,12 +1112,6 @@ const I18N = {
     kishu_count_none: '0',
     kishu_count_found: (size, total) => `${size} type(s) / ${total.toLocaleString()} total`,
     limit_label: (name, limit) => `${name}: limit ${limit.toLocaleString()} chars`,
-    limit_label_x: (name, limit) => `${name}: limit ${limit.toLocaleString()} (CJK chars & emoji = 2, URLs = 23)`,
-    limit_remain_over_x: n => `${n.toLocaleString()} over`,
-    limit_remain_left_x: n => `${n.toLocaleString()} left`,
-    preset_name_with_limit_x: (name, limit) => `${name} (limit ${limit.toLocaleString()}, CJK = 2)`,
-    preset_ok_label_x: n => `OK (${n.toLocaleString()} left)`,
-    preset_over_x: n => `${n.toLocaleString()} over`,
     limit_remain_over: n => `${n.toLocaleString()} chars over`,
     limit_remain_left: n => `${n.toLocaleString()} chars left`,
     toast_limitOver: limit => `You are over the limit (${limit.toLocaleString()} chars)`,
@@ -1132,6 +1181,7 @@ function setLanguage(lang, opts) {
     if (kishuPanel.classList.contains('show')) kishuCheckBtn.click();
     if (presetCheckPanel.classList.contains('show')) presetCheckBtn.click();
     if (splitOutput.classList.contains('show')) splitRunBtn.click();
+    if (tdOutput.classList.contains('show')) renderTestData(true);
   }
 }
 
@@ -1221,25 +1271,6 @@ function showToast(message, variant) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// X（旧Twitter）の文字数カウント（公式 twitter-text の設定 v3 に準拠した簡易版）
-// 英数字など一部の範囲は1、それ以外（日本語など）は2、絵文字は1つ2、URLは1つ23として数える。
-const X_WEIGHT1_RANGES = [[0, 4351], [8192, 8205], [8208, 8223], [8242, 8247]];
-function xWeightedLength(text) {
-  let total = 0;
-  let s = text.normalize('NFC').replace(/https?:\/\/[^\s]+/gi, () => { total += 23; return ''; });
-  const graphemes = (typeof Intl !== 'undefined' && Intl.Segmenter)
-    ? Array.from(new Intl.Segmenter('ja', { granularity: 'grapheme' }).segment(s), x => x.segment)
-    : [...s];
-  for (const g of graphemes) {
-    if (/\p{Extended_Pictographic}/u.test(g)) { total += 2; continue; }
-    for (const ch of g) {
-      const cp = ch.codePointAt(0);
-      total += X_WEIGHT1_RANGES.some(([a, b]) => cp >= a && cp <= b) ? 1 : 2;
-    }
-  }
-  return total;
-}
-
 function updateGauge(charCount) {
   const key = presetSelect.value;
   if (key === 'none' || !presets[key] || presets[key].limit === null) {
@@ -1247,15 +1278,12 @@ function updateGauge(charCount) {
     wasOver = false;
     return;
   }
-  const { name, limit, weighted } = presets[key];
+  const { name, limit } = presets[key];
   limitGauge.classList.add('show');
-  // X は公式仕様に合わせた重み付きの文字数で判定する
-  if (weighted === 'x') charCount = xWeightedLength(editor.value);
-  const sfx = weighted === 'x' ? '_x' : '';
   const remain = limit - charCount;
   const isOver = remain < 0;
-  limitLabel.textContent = t('limit_label' + sfx, name[currentLang], limit);
-  limitRemain.textContent = isOver ? t('limit_remain_over' + sfx, Math.abs(remain)) : t('limit_remain_left' + sfx, remain);
+  limitLabel.textContent = t('limit_label', name[currentLang], limit);
+  limitRemain.textContent = isOver ? t('limit_remain_over', Math.abs(remain)) : t('limit_remain_left', remain);
   limitRemain.classList.toggle('over', isOver);
   const pct = Math.min(100, (charCount / limit) * 100);
   limitBar.style.width = pct + '%';
@@ -1422,6 +1450,87 @@ genClearBtn.addEventListener('click', () => {
   updateGenStats();
 });
 
+// テストデータ生成（境界値）：ランダムではなく決まった並びを繰り返すため、
+// 同じ条件なら毎回同じ文字列になる（再現性のあるテストデータ）。
+// 文字数はコードポイント単位（サロゲートペアも1文字）で「ちょうどN文字」になる。
+const TD_POOLS = {
+  fullwidth: [...'あいうえおアイウエオ亜意宇絵尾かきくけこカキクケコ花木句家子'],
+  halfwidth: [...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'],
+  mixed: ['あ', 'a', 'ア', '1', '亜', 'A', 'ｱ', 'い', 'b', 'Ａ', '２'],
+  surrogate: ['あ', 'a', '𠮷', '😀', '1', '亜', '🍣', 'A', '𩸽', '🎉'],
+  spaces: ['あ', 'a', ' ', '　', '\n', '1', '\t'],
+};
+
+function buildTestString(pool, length) {
+  const out = new Array(length);
+  for (let i = 0; i < length; i++) out[i] = pool[i % pool.length];
+  return out.join('');
+}
+
+const tdN = document.getElementById('tdN');
+const tdPattern = document.getElementById('tdPattern');
+const tdOutput = document.getElementById('tdOutput');
+const tdGenerateBtn = document.getElementById('tdGenerateBtn');
+const tdLengthBoxes = document.querySelectorAll('#tdLengths input[type="checkbox"]');
+
+function renderTestData(silent) {
+  let n = parseInt(tdN.value, 10);
+  if (!Number.isFinite(n) || n < 0) n = 0;
+  if (n > 99999) n = 99999;
+  tdN.value = n;
+
+  const lengthDefs = { '0': 0, '1': 1, 'n-1': n - 1, 'n': n, 'n+1': n + 1 };
+  const labelNames = { '0': '0', '1': '1', 'n-1': 'N-1', 'n': 'N', 'n+1': 'N+1' };
+  const byLength = new Map();
+  Array.from(tdLengthBoxes).filter(cb => cb.checked).forEach(cb => {
+    const len = lengthDefs[cb.value];
+    if (len < 0) return;
+    if (!byLength.has(len)) byLength.set(len, []);
+    byLength.get(len).push(labelNames[cb.value]);
+  });
+
+  if (byLength.size === 0) {
+    if (!silent) showToast(t('toast_tdNone'));
+    return;
+  }
+
+  const pool = TD_POOLS[tdPattern.value] || TD_POOLS.mixed;
+  tdOutput.textContent = '';
+  tdOutput.classList.add('show');
+
+  Array.from(byLength.keys()).sort((a, b) => a - b).forEach(len => {
+    const str = buildTestString(pool, len);
+    const box = document.createElement('div');
+    box.className = 'split-chunk';
+
+    const head = document.createElement('div');
+    head.className = 'split-chunk-head';
+    const label = document.createElement('span');
+    label.textContent = t('td_item_label', byLength.get(len).join(' / '), [...str].length, str.length, utf8ByteLength(str));
+
+    const copyItemBtn = document.createElement('button');
+    copyItemBtn.type = 'button';
+    copyItemBtn.className = 'split-chunk-copy';
+    copyItemBtn.textContent = t('split_chunk_copy');
+    copyItemBtn.addEventListener('click', () => copyText(str, t('toast_copyEmpty')));
+
+    head.appendChild(label);
+    head.appendChild(copyItemBtn);
+
+    const body = document.createElement('div');
+    body.className = 'split-chunk-text';
+    body.textContent = str;
+
+    box.appendChild(head);
+    box.appendChild(body);
+    tdOutput.appendChild(box);
+  });
+
+  if (!silent) showToast(t('toast_tdDone', byLength.size));
+}
+
+tdGenerateBtn.addEventListener('click', () => renderTestData(false));
+
 // 機種依存文字（環境依存文字）チェック
 // 丸数字・ローマ数字・単位記号・括弧付き漢字など、Windows-31J拡張領域に
 // 由来する代表的な範囲を対象にしている。網羅的な公式リストではなく、
@@ -1497,26 +1606,24 @@ presetCheckBtn.addEventListener('click', () => {
   presetCheckList.textContent = '';
   let overCount = 0;
 
-  Object.values(presets).forEach(({ name, limit, weighted }) => {
-    const count = weighted === 'x' ? xWeightedLength(editor.value) : charCount;
-    const sfx = weighted === 'x' ? '_x' : '';
+  Object.values(presets).forEach(({ name, limit }) => {
     const item = document.createElement('div');
     item.className = 'preset-check-item';
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'name';
-    nameSpan.textContent = limit === null ? t('preset_name_no_limit', name[currentLang]) : t('preset_name_with_limit' + sfx, name[currentLang], limit);
+    nameSpan.textContent = limit === null ? t('preset_name_no_limit', name[currentLang]) : t('preset_name_with_limit', name[currentLang], limit);
 
     const statusSpan = document.createElement('span');
     statusSpan.className = 'status';
     if (limit === null) {
       statusSpan.textContent = t('preset_notarget');
       statusSpan.classList.add('ok');
-    } else if (count <= limit) {
-      statusSpan.textContent = t('preset_ok_label' + sfx, limit - count);
+    } else if (charCount <= limit) {
+      statusSpan.textContent = t('preset_ok_label', limit - charCount);
       statusSpan.classList.add('ok');
     } else {
-      statusSpan.textContent = t('preset_over' + sfx, count - limit);
+      statusSpan.textContent = t('preset_over', charCount - limit);
       statusSpan.classList.add('over');
       overCount++;
     }
@@ -1549,7 +1656,7 @@ splitToggleBtn.addEventListener('click', () => {
     // 用途プリセットが選択されていれば、その上限を分割サイズの初期値として反映する
     const key = presetSelect.value;
     if (key !== 'none' && presets[key] && presets[key].limit) {
-      splitSizeInput.value = presets[key].splitSize || presets[key].limit;
+      splitSizeInput.value = presets[key].limit;
     }
   }
 });

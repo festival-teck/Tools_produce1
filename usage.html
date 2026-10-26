@@ -2,13 +2,6 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<link rel="canonical" href="https://moji.labfond.com/usage.html">
-<script>
-  if (location.hostname.endsWith("github.io")) {
-    var path = location.pathname.replace(/^\/Tools_produce1/, "");
-    location.replace("https://moji.labfond.com" + path + location.search + location.hash);
-  }
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-V8JH33MYT1"></script>
@@ -17,15 +10,13 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-V8JH33MYT1');
-  gtag('config', 'G-GK0SS0BLJ9');
 </script>
 <title>使い方 | モジツール（文字数カウント・ダミーテキスト生成・テキスト差分比較）</title>
 <meta name="description" content="モジツールの使い方ガイド。文字数カウント・用途別上限チェック・SNS投稿用の自動分割・ダミーテキスト生成・テキスト差分比較の使い方をまとめて解説します。">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#3b6ef6">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <style>
   :root {
     --bg: #f7f7f8;
@@ -82,7 +73,7 @@
     flex-wrap: wrap;
     gap: 8px;
   }
-  .site-brand { font-size: 0.95rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
+  .site-brand { font-size: 1.5rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: 0.02em; }
   .site-nav { display: flex; gap: 14px; flex-wrap: wrap; }
   .site-nav a { font-size: 0.78rem; color: var(--text-sub); text-decoration: none; }
   .site-nav a:hover { color: var(--accent); }
@@ -176,6 +167,10 @@
   <div class="doc-panel" id="dummy">
     <h2>ダミーテキスト生成</h2>
     <p>文字数と文字種（ひらがな・カタカナ・漢字・英字・数字・記号・サロゲートペア文字）を指定して、テスト用・デザイン確認用のダミーテキストを生成できます。生成後はそのままコピーして利用できます。</p>
+
+    <h3>テストデータ生成（境界値・混在）</h3>
+    <p>「基準の文字数 N」と文字の種類（全角のみ／半角英数字のみ／全角半角混在／サロゲートペア入り／空白・改行・タブ入り）を選び、0文字・1文字・N-1・N・N+1文字の文字列をまとめて生成できます。入力欄の文字数制限や、絵文字・半角カナなどを含む入力の動作確認に便利です。</p>
+    <p>各文字列には、文字数のほかUTF-16の長さ（JavaScriptの length 相当）とUTF-8のバイト数も表示されるため、「文字数」と「バイト数」で上限判定が食い違う不具合の確認にも使えます。生成内容は毎回同じ並びになるので、テスト結果を再現しやすくなっています。</p>
   </div>
 
   <div class="doc-panel" id="diff">
@@ -192,7 +187,6 @@
     <span>© 2026 モジツール</span>
     <nav>
       <a href="usage.html">使い方</a>
-      <a href="guide.html">読みもの</a>
       <a href="faq.html">よくある質問</a>
       <a href="about.html">運営者情報</a>
       <a href="privacy.html">プライバシーポリシー</a>

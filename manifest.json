@@ -1,8 +1,8 @@
 {
   "name": "モジツール",
   "short_name": "モジツール",
-  "description": "文字数カウント・テキスト整形・ダミーテキスト生成・テキスト差分比較",
-  "start_url": "./",
+  "description": "文字数カウント・テキスト整形・ダミーテキスト生成・差分比較ができる無料のブラウザ完結ツール",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f7f8",
